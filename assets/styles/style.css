@@ -1,0 +1,195 @@
+:root {
+  /* colors */
+  --color-heaven-dark: #004961;
+  --color-heaven-light: #61d8ff;
+  --color-hell-dark: #1e0401;
+  --color-hell-light: #ff543a;
+  --color-normal-light: #f3fff4;
+  --color-normal-dark: #263427;
+  --color-transition-duration: 1s;
+
+  /* dimensions */
+  --border-width: 1px;
+  --border-radius: 2px;
+  
+  /* body */
+  --body-max-width: 1160px;
+  --body-font-size: 1rem;
+  --body-padding-horizontal: 20px;
+  --body-line-height: 1.65;
+
+  /* h1 */
+  --h1-elem-font-size: 2.5rem;
+
+  /* .button */
+  --button-padding-vertical: 16px;
+  --button-font-size: 1.25rem;
+  
+  /* utils */
+  --standard-margin-vertical: calc(var(--body-line-height) * var(--body-font-size));
+}
+
+/* body */
+
+body {
+  margin: 0 auto;
+  padding: 0 var(--body-padding-horizontal);
+  max-width: var(--body-max-width);
+  background-color: var(--color-normal-light);
+  color: var(--color-normal-dark);
+  font-family: serif;
+  line-height: var(--body-line-height);
+  transition: background-color var(--color-transition-duration), color var(--color-transition-duration);
+}
+
+body.heaven {
+  background-color: var(--color-heaven-light);
+  color: var(--color-heaven-dark);
+}
+
+body.hell {
+  background-color: var(--color-hell-dark);
+  color: var(--color-hell-light);
+}
+
+/* button element */
+
+button {
+  cursor: pointer;
+}
+
+/* details element */
+
+details {
+  border-style: solid;
+  border-width: var(--border-width);
+  border-color: var(--color-normal-dark);
+  border-radius: var(--border-radius);
+  padding: 16px;
+}
+
+.heaven details {
+  border-color: var(--color-heaven-dark);
+}
+
+.hell details {
+  border-color: var(--color-hell-light);
+}
+
+summary {
+  cursor: pointer;
+}
+
+/* footer element */
+
+footer {
+  margin: 50px 0;
+}
+
+/* heading element */
+
+h1 {
+  margin: calc(var(--body-line-height) * var(--h1-elem-font-size)) 0 var(--standard-margin-vertical);
+  font-size: var(--h1-elem-font-size);
+  font-weight: 600;
+}
+
+/* hr element */
+
+hr {
+  margin: var(--standard-margin-vertical) 0;
+  border-style: solid;
+  border-width: calc(var(--border-width) / 2); 
+  border-color: var(--color-normal-dark);
+}
+
+.heaven hr {
+  border-color: var(--color-heaven-dark);
+}
+
+.hell hr {
+  border-color: var(--color-hell-light);
+}
+
+/* p element */
+
+p {
+  margin: var(--standard-margin-vertical) 0; 
+}
+
+/* .button class */
+
+.button {
+  margin: calc(var(--body-line-height) * var(--button-font-size)) 0;
+  border-style: solid;
+  border-width: 1px;
+  border-color: var(--color-normal-dark);
+  border-radius: calc(var(--body-line-height) * var(--button-font-size) + var(--button-padding-vertical) * 2);
+  padding: var(--button-padding-vertical) 24px;
+  background-color: var(--color-normal-dark);
+  color: var(--color-normal-light);
+  display: block;
+  font-size: var(--button-font-size);
+  font-weight: 500;
+  transition: opacity 0.2s, background-color var(--color-transition-duration), color var(--color-transition-duration);
+}
+
+.button:hover {
+  opacity: 85%;
+}
+
+.heaven .button {
+  border-color: var(--color-heaven-dark);
+  background-color: var(--color-heaven-dark);
+  color: var(--color-heaven-light);
+}
+
+.hell .button {
+  border-color: var(--color-hell-light);
+  background-color: var(--color-hell-light);
+  color: var(--color-hell-dark);
+}
+
+/* other classes */
+
+.website-title {
+  margin: var(--standard-margin-vertical) 0;
+  font-size: var(--body-font-size);
+}
+
+.timer {
+  font-size: 12rem;
+  line-height: 1;
+}
+
+@media screen and (width < 900px) {
+  .timer {
+    font-size: 9.75rem;
+  }
+}
+
+@media screen and (width < 700px) {
+  .timer {
+    font-size: 6.75rem;
+  }
+}
+
+@media screen and (width < 500px) {
+  :root {
+    --h1-elem-font-size: 2rem;
+  }
+
+  .timer {
+    font-size: 5rem;
+  }
+}
+
+@media screen and (width < 400px) {
+  :root {
+    --h1-elem-font-size: 1.5rem;
+  }
+
+  .timer {
+    font-size: 3.5rem;
+  }
+}
