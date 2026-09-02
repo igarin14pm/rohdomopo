@@ -1,9 +1,9 @@
 :root {
   /* colors */
   --color-heaven-dark: #004961;
-  --color-heaven-light: #61d8ff;
-  --color-hell-dark: #1e0401;
-  --color-hell-light: #ff543a;
+  --color-heaven-light: #b0ebff;
+  --color-hell-dark: #240500;
+  --color-hell-light: #ff5b42;
   --color-normal-light: #f3fff4;
   --color-normal-dark: #263427;
   --color-transition-duration: 1s;
