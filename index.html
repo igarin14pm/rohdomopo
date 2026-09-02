@@ -4,13 +4,25 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, user-scalable=yes" />
     <link rel="stylesheet" href="./common/styles/style.css" />
+    <link rel="stylesheet" href="./assets/styles/style.css" />
     <title>ロードモポ - 無意味な徒労から人類を解放するカウントダウン</title>
+    <script type="module" src="./assets/scripts/script.js" defer></script>
   </head>
   <body class="">
+
+    <dialog closedby="any" id="sound-dialog">
+      <h1>🔊</h1>
+      <h1>このWebアプリでは音声が流れます</h1>
+      <p>歓喜と絶望を音でお知らせします</p>
+      <button class="button" commandfor="sound-dialog" command="close">閉じる</button>
+    </dialog>
+
     <header>
       <h1 class="website-title">ロードモポ - 無意味な徒労から人類を解放するカウントダウン</h1>
     </header>
+
     <main>
+
       <noscript>
         <h1>JavaScript を有効にしてください</h1>
         <p>
@@ -19,13 +31,15 @@
         </p>
         <hr />
       </noscript>
+
       <div>
         <h1>徒労のカウントダウンを開始する</h1>
         <p class="timer">05:00.00</p>
         <button class="button">カウントダウンを開始</button>
-        <p>タイマー稼働中は音声が再生されます</p>
       </div>
+
       <hr />
+      
       <div>
         <p>
           五分という時間は、人間が尊厳を保ったまま機械の模倣を演じられる限界の領域だ。
@@ -53,13 +67,17 @@
           </p>
         </details>
       </div>
+
     </main>
+
     <hr />
+    
     <footer>
       <small>
         &copy; 2026 Igarin<br />
         このWebアプリは &quot;ZEN Study プログラミングコンテスト 2026 夏&quot; に応募する作品として制作されました。
       </small>
     </footer>
+
   </body>
 </html>
