@@ -7,17 +7,31 @@
 let isAsserted = false;
 
 /**
- * 初期化処理のコールバック関数です
+ * 各テストの前に実行されるコールバック関数です
  * @type {() => void}
  */
 let beforeEachCallback;
 
 /**
- * 初期化処理を設定します
- * @param {() => void} callback 初期化処理を記述したコールバック関数
+ * 各テストの前に実行される関数を設定します
+ * @param {() => void} callback 処理を記述したコールバック関数
  */
 export function beforeEach(callback) {
   beforeEachCallback = callback;
+}
+
+/**
+ * 各テストの後に実行されるコールバック関数です
+ * @type {() => void}
+ */
+let afterEachCallback;
+
+/**
+ * 各テストの後に実行される関数を設定します
+ * @param {() => void} callback 処理を記述したコールバック関数
+ */
+export function afterEach(callback) {
+  afterEachCallback = callback;
 }
 
 /**
@@ -156,7 +170,7 @@ export async function test(name, testFn) {
     console.error(`Test failed: ${name}\nexpect functions not called.`);
     return;
   }
-  beforeEachCallback = () => { };
+  afterEachCallback();
   console.info(`Test passed: ${name}`);
 }
 

@@ -1,6 +1,12 @@
 import { RohdomopoApp } from './modules/app.js';
 
 /**
+ * HTMLの `<body>`
+ * @type {HTMLBodyElement}
+ */
+const body = document.body;
+
+/**
  * "このWebサイトでは音声が流れます" という表示の `<dialog>` 要素
  * @type {HTMLDialogElement}
  */
@@ -35,6 +41,7 @@ const startPauseButtonElement = document.querySelector('#start-pause-button');
  * @type {RohdomopoApp}
  */
 const rohdomopoApp = new RohdomopoApp(
+  body,
   soundDialogElement,
   stateHeadingElement,
   stateMessageElement,
