@@ -18,6 +18,12 @@ export class RohdomopoApp {
   stateHeadingElement;
 
   /**
+   * DOMで取得した文学的な指示文を表示する `<p>` 要素
+   * @type {HTMLParagraphElement}
+   */
+  stateMessageElement;
+
+  /**
    * DOMで取得したタイマーの残り時間を表示するパラグラフ要素
    * @type {HTMLParagraphElement}
    */
@@ -45,17 +51,20 @@ export class RohdomopoApp {
    * `RohdomopoApp` のインスタンスを生成します
    * @param {HTMLDialogElement} soundDialogElement DOMで取得した "このWebアプリでは音声が流れます" と表示する `<dialog>` 要素
    * @param {HTMLHeadingElement} stateHeadingElement DOMで取得したタイマーの状態を表示する `<h1>` 要素
+   * @param {HTMLParagraphElement} stateMessageElement DOMで取得した文学的な指示文を表示する `<p>` 要素
    * @param {HTMLParagraphElement} timerDisplayElement DOMで取得したタイマーの残り時間を表示する `<p>` 要素
    * @param {HTMLButtonElement} startPauseButtonElement DOMで取得したカウントダウンを開始・停止する `<button>` 要素
    */
   constructor(
     soundDialogElement,
     stateHeadingElement,
+    stateMessageElement,
     timerDisplayElement,
     startPauseButtonElement,
   ) {
     this.soundDialogElement = soundDialogElement;
     this.stateHeadingElement = stateHeadingElement;
+    this.stateMessageElement = stateMessageElement;
     this.timerDisplayElement = timerDisplayElement;
     this.startPauseButtonElement = startPauseButtonElement;
 
@@ -73,8 +82,10 @@ export class RohdomopoApp {
   onStateChanged = (state) => {
     if (state === 'hell') {
       this.stateHeadingElement.textContent = '五分間の徒労 〜 人間性の剥奪';
+      this.stateMessageElement.textContent = '問うな。理由を求める時間は終わった。ただキーボードを叩け。';
     } else if (state === 'heaven') {
       this.stateHeadingElement.textContent = '二十五分間の解放 〜 人間性の奪還';
+      this.stateMessageElement.textContent = '見上げよ。世界は彩りに満ちている。思考の翼を広げ、どこへでも飛んでゆけ。';
     }
   }
 

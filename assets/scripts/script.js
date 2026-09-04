@@ -13,6 +13,12 @@ const soundDialogElement = document.querySelector('#sound-dialog');
 const stateHeadingElement = document.querySelector('#state-heading');
 
 /**
+ * 文学的な指示文を表示する `<p>` 要素
+ * @type {HTMLParagraphElement}
+ */
+const stateMessageElement = document.querySelector('#state-message');
+
+/**
  * タイマーの残り時間を表示する `<p>` 要素
  * @type {HTMLParagraphElement}
  */
@@ -31,6 +37,7 @@ const startPauseButtonElement = document.querySelector('#start-pause-button');
 const rohdomopoApp = new RohdomopoApp(
   soundDialogElement,
   stateHeadingElement,
+  stateMessageElement,
   timerDisplayElement,
   startPauseButtonElement
 );
