@@ -21,6 +21,7 @@ beforeEach(() => {
     '</dialog>' +
     '<main>' +
     '  <div>' +
+    '    <h1 id="state-heading">徒労のカウントダウンを開始する</h1>' +
     '    <p id="timer-display" class="timer-display">05:00.00</p>' +
     '    <button id="start-pause-button" class="button">カウントダウンを開始</button>' +
     '  </div>' +
@@ -33,26 +34,65 @@ beforeEach(() => {
 
 await test('`RohdomopoApp.constructor()`', () => {
   const soundDialogElement = htmlContainer.querySelector('#sound-dialog');
+  const stateHeadingElement = htmlContainer.querySelector('#state-heading');
   const timerDisplayElement = htmlContainer.querySelector('#timer-display');
   const startPauseButtonElement = htmlContainer.querySelector('#start-pause-button');
 
   const rohdomopoApp = new App.RohdomopoApp(
     soundDialogElement,
+    stateHeadingElement,
     timerDisplayElement,
     startPauseButtonElement
   );
 
   expect(rohdomopoApp.soundDialogElement).toBe(soundDialogElement);
+  expect(rohdomopoApp.stateHeadingElement).toBe(stateHeadingElement);
   expect(rohdomopoApp.timerDisplayElement).toBe(timerDisplayElement);
   expect(rohdomopoApp.startPauseButtonElement).toBe(startPauseButtonElement);
 });
 
-await test('`RohdomopoApp.requestUpdatingTimerDisplay()` - `requestAnimationId` に値が代入される', () => {
+await test('`RohdomopoApp.onStateChanged()` - `\'hell\'`', () => {
   const soundDialogElement = htmlContainer.querySelector('#sound-dialog');
+  const stateHeadingElement = htmlContainer.querySelector('#state-heading');
   const timerDisplayElement = htmlContainer.querySelector('#timer-display');
   const startPauseButtonElement = htmlContainer.querySelector('#start-pause-button');
   const rohdomopoApp = new App.RohdomopoApp(
     soundDialogElement,
+    stateHeadingElement,
+    timerDisplayElement,
+    startPauseButtonElement
+  );
+
+  rohdomopoApp.onStateChanged('hell');
+
+  expect(stateHeadingElement.textContent).toBe('五分間の徒労 〜 人間性の剥奪');
+});
+
+await test('`RohdomopoApp.onStateChanged()` - `\'heaven\'`', () => {
+  const soundDialogElement = htmlContainer.querySelector('#sound-dialog');
+  const stateHeadingElement = htmlContainer.querySelector('#state-heading');
+  const timerDisplayElement = htmlContainer.querySelector('#timer-display');
+  const startPauseButtonElement = htmlContainer.querySelector('#start-pause-button');
+  const rohdomopoApp = new App.RohdomopoApp(
+    soundDialogElement,
+    stateHeadingElement,
+    timerDisplayElement,
+    startPauseButtonElement
+  );
+
+  rohdomopoApp.onStateChanged('heaven');
+
+  expect(stateHeadingElement.textContent).toBe('二十五分間の解放 〜 人間性の奪還');
+});
+
+await test('`RohdomopoApp.requestUpdatingTimerDisplay()` - `requestAnimationId` に値が代入される', () => {
+  const soundDialogElement = htmlContainer.querySelector('#sound-dialog');
+  const stateHeadingElement = htmlContainer.querySelector('#state-heading');
+  const timerDisplayElement = htmlContainer.querySelector('#timer-display');
+  const startPauseButtonElement = htmlContainer.querySelector('#start-pause-button');
+  const rohdomopoApp = new App.RohdomopoApp(
+    soundDialogElement,
+    stateHeadingElement,
     timerDisplayElement,
     startPauseButtonElement
   );
@@ -68,10 +108,12 @@ await test('`RohdomopoApp.requestUpdatingTimerDisplay()` - `requestAnimationId` 
 
 await test('`RohdomopoApp.cancelUpdatingTimerDisplay()` - `requestAnimationId` に `null` が代入される', () => {
   const soundDialogElement = htmlContainer.querySelector('#sound-dialog');
+  const stateHeadingElement = htmlContainer.querySelector('#state-heading');
   const timerDisplayElement = htmlContainer.querySelector('#timer-display');
   const startPauseButtonElement = htmlContainer.querySelector('#start-pause-button');
   const rohdomopoApp = new App.RohdomopoApp(
     soundDialogElement,
+    stateHeadingElement,
     timerDisplayElement,
     startPauseButtonElement
   );
@@ -84,10 +126,12 @@ await test('`RohdomopoApp.cancelUpdatingTimerDisplay()` - `requestAnimationId` �
 
 await test('`RohdomopoApp.onClickStartPauseButton()` - タイマー開始時', () => {
   const soundDialogElement = htmlContainer.querySelector('#sound-dialog');
+  const stateHeadingElement = htmlContainer.querySelector('#state-heading');
   const timerDisplayElement = htmlContainer.querySelector('#timer-display');
   const startPauseButtonElement = htmlContainer.querySelector('#start-pause-button');
   const rohdomopoApp = new App.RohdomopoApp(
     soundDialogElement,
+    stateHeadingElement,
     timerDisplayElement,
     startPauseButtonElement
   );
@@ -103,10 +147,12 @@ await test('`RohdomopoApp.onClickStartPauseButton()` - タイマー開始時', (
 
 await test('`RohdomopoApp.onClickStartPauseButton()` - タイマー一時停止時', () => {
   const soundDialogElement = htmlContainer.querySelector('#sound-dialog');
+  const stateHeadingElement = htmlContainer.querySelector('#state-heading');
   const timerDisplayElement = htmlContainer.querySelector('#timer-display');
   const startPauseButtonElement = htmlContainer.querySelector('#start-pause-button');
   const rohdomopoApp = new App.RohdomopoApp(
     soundDialogElement,
+    stateHeadingElement,
     timerDisplayElement,
     startPauseButtonElement
   );

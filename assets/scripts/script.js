@@ -7,6 +7,12 @@ import { RohdomopoApp } from './modules/app.js';
 const soundDialogElement = document.querySelector('#sound-dialog');
 
 /**
+ * タイマーの状態を表示する `<h1>` 要素
+ * @type {HTMLHeadingElement}
+ */
+const stateHeadingElement = document.querySelector('#state-heading');
+
+/**
  * タイマーの残り時間を表示する `<p>` 要素
  * @type {HTMLParagraphElement}
  */
@@ -24,6 +30,7 @@ const startPauseButtonElement = document.querySelector('#start-pause-button');
  */
 const rohdomopoApp = new RohdomopoApp(
   soundDialogElement,
+  stateHeadingElement,
   timerDisplayElement,
   startPauseButtonElement
 );
