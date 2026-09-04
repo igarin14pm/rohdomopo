@@ -1,9 +1,9 @@
 :root {
   /* colors */
-  --color-heaven-dark: #004961;
-  --color-heaven-light: #b0ebff;
   --color-hell-dark: #240500;
   --color-hell-light: #ff5b42;
+  --color-heaven-dark: #004961;
+  --color-heaven-light: #b0ebff;
   --color-normal-light: #f3fff4;
   --color-normal-dark: #263427;
   --color-transition-duration: 1s;
@@ -42,14 +42,14 @@ body {
   transition: background-color var(--color-transition-duration), color var(--color-transition-duration);
 }
 
-body.heaven {
-  background-color: var(--color-heaven-light);
-  color: var(--color-heaven-dark);
-}
-
 body.hell {
   background-color: var(--color-hell-dark);
   color: var(--color-hell-light);
+}
+
+body.heaven {
+  background-color: var(--color-heaven-light);
+  color: var(--color-heaven-dark);
 }
 
 /* button element */
@@ -68,12 +68,12 @@ details {
   padding: 16px;
 }
 
-.heaven details {
-  border-color: var(--color-heaven-dark);
-}
-
 .hell details {
   border-color: var(--color-hell-light);
+}
+
+.heaven details {
+  border-color: var(--color-heaven-dark);
 }
 
 summary {
@@ -95,16 +95,16 @@ dialog {
   transition: background-color var(--color-transition-duration), color var(--color-transition-duration);
 }
 
-.heaven dialog {
-  border-color: var(--color-heaven-dark);
-  background-color: var(--color-heaven-light);
-  color: var(--color-heaven-dark);
-}
-
 .hell dialog {
   border-color: var(--color-hell-light);
   background-color: var(--color-hell-dark);
   color: var(--color-hell-light);
+}
+
+.heaven dialog {
+  border-color: var(--color-heaven-dark);
+  background-color: var(--color-heaven-light);
+  color: var(--color-heaven-dark);
 }
 
 dialog h1 {
@@ -139,12 +139,12 @@ hr {
   border-color: var(--color-normal-dark);
 }
 
-.heaven hr {
-  border-color: var(--color-heaven-dark);
-}
-
 .hell hr {
   border-color: var(--color-hell-light);
+}
+
+.heaven hr {
+  border-color: var(--color-heaven-dark);
 }
 
 /* p element */
@@ -174,16 +174,16 @@ p {
   opacity: 85%;
 }
 
-.heaven .button {
-  border-color: var(--color-heaven-dark);
-  background-color: var(--color-heaven-dark);
-  color: var(--color-heaven-light);
-}
-
 .hell .button {
   border-color: var(--color-hell-light);
   background-color: var(--color-hell-light);
   color: var(--color-hell-dark);
+}
+
+.heaven .button {
+  border-color: var(--color-heaven-dark);
+  background-color: var(--color-heaven-dark);
+  color: var(--color-heaven-light);
 }
 
 /* responsive design */
