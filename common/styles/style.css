@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@200..900&display=swap');
+
 :root {
   /* colors */
   --color-hell-dark: #240500;
@@ -37,7 +39,7 @@ body {
   max-width: var(--body-max-width);
   background-color: var(--color-normal-light);
   color: var(--color-normal-dark);
-  font-family: serif;
+  font-family: "Noto Serif JP", serif;
   line-height: var(--body-line-height);
   transition: background-color var(--color-transition-duration), color var(--color-transition-duration);
 }
@@ -56,6 +58,7 @@ body.heaven {
 
 button {
   cursor: pointer;
+  font-family: "Noto Serif JP", serif;
 }
 
 /* details element */

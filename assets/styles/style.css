@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,100..900;1,100..900&display=swap');
+
 @keyframes one-minute-left {
   
   0% {
@@ -24,7 +26,9 @@
 }
 
 .timer-display {
-  font-size: 12rem;
+  font-family: "Noto Serif", serif;
+  font-size: clamp(2rem, 22vw, 17rem);
+  font-weight: 400;
   line-height: 1;
 }
 
@@ -35,28 +39,4 @@
 .website-title {
   margin: var(--standard-margin-vertical) 0;
   font-size: var(--body-font-size);
-}
-
-@media screen and (width < 900px) {
-  .timer-display {
-    font-size: 9.75rem;
-  }
-}
-
-@media screen and (width < 700px) {
-  .timer-display {
-    font-size: 6.75rem;
-  }
-}
-
-@media screen and (width < 500px) {
-  .timer-display {
-    font-size: 5rem;
-  }
-}
-
-@media screen and (width < 400px) {
-  .timer-display {
-    font-size: 3.5rem;
-  }
 }
