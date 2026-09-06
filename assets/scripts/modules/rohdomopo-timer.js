@@ -32,6 +32,14 @@ export class CountDownTimer {
   #isCountingDown = false;
 
   /**
+   * カウントダウン中に実行されるコールバック関数です
+   * 
+   * @function
+   * @type {() => void}
+   */
+  onCountingDown;
+
+  /**
    * タイマーのカウントダウンが終了したかどうか (残り0秒かどうか) を表します
    * 
    * @readonly
@@ -65,10 +73,12 @@ export class CountDownTimer {
    * `CountDownTimer` のインスタンスを生成します
    * 
    * @param {number} duration_ms タイマーの長さ (ミリ秒) 100分の1秒単位で演算が行われるため、1の位の値は無視されます
+   * @param {() => void} onCountingDown カウントダウン中に実行されるコールバック関数です
    */
-  constructor(duration_ms) {
+  constructor(duration_ms, onCountingDown) {
     this.duration_cs = Math.floor(duration_ms / 10);
     this.currentTime_cs = this.duration_cs;
+    this.onCountingDown = onCountingDown;
   }
 
   /**
@@ -83,6 +93,8 @@ export class CountDownTimer {
     this.#isCountingDown = true;
     for await (const i of setInterval(10)) {
       this.currentTime_cs -= 1;
+
+      this.onCountingDown();
 
       if (this.currentTime_cs === 0) {
         this.pause();
@@ -226,6 +238,23 @@ export class RohdomopoTimer {
   }
 
   /**
+   * タイマーの残り時間 (センチ秒: 100分の1秒)  
+   * `state` に応じた残り時間を取得します
+   * 
+   * @readonly
+   * @type {number}
+   */
+  get currentTime_cs() {
+    if (this.state === RohdomopoTimerState.HELL) {
+      return this.hellTimer.currentTime_cs;
+    } else if (this.state === RohdomopoTimerState.HEAVEN) {
+      return this.heavenTimer.currentTime_cs;
+    } else {
+      return 0;
+    }
+  }
+
+  /**
    * タイマーのUIに表示する文字列です  
    * 状態に合わせてそれぞれのタイマーからの値を表示します
    * 
@@ -247,15 +276,17 @@ export class RohdomopoTimer {
    * 
    * @param {number} hellDuration_ms "五分間の徒労" 状態用タイマーの長さ (ミリ秒) 100分の1秒単位で演算が行われるため、1の位の値は無視されます
    * @param {number} heavenDuration_ms "二十五分間の解放" 状態用のタイマーの長さ (ミリ秒) 100分の1秒単位で演算が行われるため、1の位の値は無視されます
-   * @param {(state: string) => void} onStateChanged 状態が変化した際に呼び出されるコールバック
+   * @param {() => void} onCountingDown カウントダウン中に実行されるコールバック関数
+   * @param {(state: string) => void} onStateChanged 状態が変化した際に呼び出されるコールバック関数
    */
   constructor(
     hellDuration_ms,
     heavenDuration_ms,
+    onCountingDown,
     onStateChanged
   ) {
-    this.hellTimer = new CountDownTimer(hellDuration_ms);
-    this.heavenTimer = new CountDownTimer(heavenDuration_ms);
+    this.hellTimer = new CountDownTimer(hellDuration_ms, onCountingDown);
+    this.heavenTimer = new CountDownTimer(heavenDuration_ms, onCountingDown);
     this.onStateChanged = onStateChanged;
   }
 

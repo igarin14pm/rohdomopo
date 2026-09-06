@@ -109,10 +109,26 @@ export class RohdomopoApp {
     this.startPauseButtonElement = startPauseButtonElement;
 
     this.rohdomopoTimer = new RohdomopoTimer(
-      15 * 1000, // tmp
-      25 * 1000, // tmp
+      70 * 1000, // tmp
+      70 * 1000, // tmp
+      this.onCountingDown,
       this.onStateChanged
     );
+  }
+
+  /**
+   * カウントダウン中に実行されるコールバック関数です
+   * 
+   * @type {() => void}
+   */
+  onCountingDown = () => {
+    const oneMinuteLeftClassName = 'one-minute-left'
+    const currentTime_cs = this.rohdomopoTimer.currentTime_cs;
+    if (currentTime_cs < 60 * 100 && !this.timerDisplayElement.classList.contains(oneMinuteLeftClassName)) {
+      this.timerDisplayElement.classList.add(oneMinuteLeftClassName);
+    } else if (currentTime_cs > 60 * 100 && this.timerDisplayElement.classList.contains(oneMinuteLeftClassName)) {
+      this.timerDisplayElement.classList.remove(oneMinuteLeftClassName);
+    }
   }
 
   /**
