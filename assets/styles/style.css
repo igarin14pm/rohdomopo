@@ -1,4 +1,14 @@
-.timer {
+:root {
+  --state-message-font-size: 1.25rem;
+}
+
+.state-message {
+  min-height: calc(var(--body-line-height) * var(--state-message-font-size));
+  font-size: var(--state-message-font-size);
+  font-weight: 600;
+}
+
+.timer-display {
   font-size: 12rem;
   line-height: 1;
 }
@@ -9,25 +19,25 @@
 }
 
 @media screen and (width < 900px) {
-  .timer {
+  .timer-display {
     font-size: 9.75rem;
   }
 }
 
 @media screen and (width < 700px) {
-  .timer {
+  .timer-display {
     font-size: 6.75rem;
   }
 }
 
 @media screen and (width < 500px) {
-  .timer {
+  .timer-display {
     font-size: 5rem;
   }
 }
 
 @media screen and (width < 400px) {
-  .timer {
+  .timer-display {
     font-size: 3.5rem;
   }
 }
