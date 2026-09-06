@@ -167,7 +167,7 @@ export class RohdomopoTimer {
   /**
    * 状態が変化した際に呼び出されるコールバック
    * 
-   * @type {(state: string) => void}
+   * @type {(state: string) => Promise<void>}
    */
   onStateChanged;
 
@@ -215,11 +215,12 @@ export class RohdomopoTimer {
    * タイマーの状態を表します  
    * `RohdomopoTimerState` のプロパティの値を代入します
    * 
-   * @type {string}
+   * @async
+   * @param {string} 新しい `state` の値
    */
-  set state(newValue) {
+  async setState(newValue) {
     this.#state = newValue;
-    this.onStateChanged(this.#state);
+    await this.onStateChanged(this.#state);
   }
 
   /**
@@ -244,7 +245,7 @@ export class RohdomopoTimer {
    * 
    * @param {number} hellDuration_ms "五分間の徒労" 状態用タイマーの長さ (ミリ秒) 100分の1秒単位で演算が行われるため、1の位の値は無視されます
    * @param {number} heavenDuration_ms "二十五分間の解放" 状態用のタイマーの長さ (ミリ秒) 100分の1秒単位で演算が行われるため、1の位の値は無視されます
-   * @param {(state: string) => void} onStateChanged 状態が変化した際に呼び出されるコールバック
+   * @param {(state: string) => Promise<void>} onStateChanged 状態が変化した際に呼び出されるコールバック
    */
   constructor(
     hellDuration_ms,
@@ -267,7 +268,7 @@ export class RohdomopoTimer {
     }
 
     if (this.state != RohdomopoTimerState.HELL && this.state != RohdomopoTimerState.HEAVEN) {
-      this.state = RohdomopoTimerState.HELL;
+      await this.setState(RohdomopoTimerState.HELL);
     }
 
     this.#isCountingDown = true;
@@ -275,13 +276,13 @@ export class RohdomopoTimer {
       if (this.state === RohdomopoTimerState.HELL) {
         await this.hellTimer.start();
         if (this.hellTimer.isFinished) {
-          this.state = RohdomopoTimerState.HEAVEN;
+          await this.setState(RohdomopoTimerState.HEAVEN);
           this.hellTimer.reset();
         }
       } else if (this.state === RohdomopoTimerState.HEAVEN) {
         await this.heavenTimer.start();
         if (this.heavenTimer.isFinished) {
-          this.state = RohdomopoTimerState.HELL;
+          await this.setState(RohdomopoTimerState.HELL);
           this.heavenTimer.reset();
         }
       }
