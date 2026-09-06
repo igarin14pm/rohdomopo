@@ -20,6 +20,20 @@ export class RohdomopoApp {
   soundDialogElement;
 
   /**
+   * DOMで取得した hell.mp3 を再生する `<audio>` 要素
+   * 
+   * @type {HTMLAudioElement}
+   */
+  hellAudioElement;
+
+  /**
+   * DOMで取得した heaven.mp3 を再生する `<audio>` 要素
+   * 
+   * @type {HTMLAudioElement}
+   */
+  heavenAudioElement;
+
+  /**
    * DOMで取得したタイマーの状態を表示する `<h1>` 要素
    * 
    * @type {HTMLHeadingElement}
@@ -66,6 +80,8 @@ export class RohdomopoApp {
    * 
    * @param {HTMLBodyElement} body DOMで取得した HTML の `<body>`
    * @param {HTMLDialogElement} soundDialogElement DOMで取得した "このWebアプリでは音声が流れます" と表示する `<dialog>` 要素
+   * @param {HTMLAudioElement} hellAudioElement DOMで取得した hell.mp3 を再生する `<audio>` 要素
+   * @param {HTMLAudioElement} heavenAudioElement DOMで取得した heaven.mp3 を再生する `<audio>` 要素
    * @param {HTMLHeadingElement} stateHeadingElement DOMで取得したタイマーの状態を表示する `<h1>` 要素
    * @param {HTMLParagraphElement} stateMessageElement DOMで取得した文学的な指示文を表示する `<p>` 要素
    * @param {HTMLParagraphElement} timerDisplayElement DOMで取得したタイマーの残り時間を表示する `<p>` 要素
@@ -74,6 +90,8 @@ export class RohdomopoApp {
   constructor(
     body,
     soundDialogElement,
+    hellAudioElement,
+    heavenAudioElement,
     stateHeadingElement,
     stateMessageElement,
     timerDisplayElement,
@@ -81,14 +99,16 @@ export class RohdomopoApp {
   ) {
     this.body = body;
     this.soundDialogElement = soundDialogElement;
+    this.hellAudioElement = hellAudioElement;
+    this.heavenAudioElement = heavenAudioElement;
     this.stateHeadingElement = stateHeadingElement;
     this.stateMessageElement = stateMessageElement;
     this.timerDisplayElement = timerDisplayElement;
     this.startPauseButtonElement = startPauseButtonElement;
 
     this.rohdomopoTimer = new RohdomopoTimer(
-      5 * 1000,
-      25 * 1000,
+      15 * 1000, // tmp
+      25 * 1000, // tmp
       this.onStateChanged
     );
   }
@@ -96,26 +116,41 @@ export class RohdomopoApp {
   /**
    * `rohdomopoTimer.state` が変化した際に呼び出されるコールバックです
    * 
+   * @async
+   * @function
    * @param {string} state `rohdomopoTimer.state` の値 `hell` もしくは `heaven` です
    */
-  onStateChanged = (state) => {
+  onStateChanged = async (state) => {
     if (state === RohdomopoTimerState.HELL) {
       this.body.classList.remove('heaven');
       this.body.classList.add('hell');
+
       this.stateHeadingElement.textContent = '五分間の徒労 〜 人間性の剥奪';
       this.stateMessageElement.textContent = '問うな。理由を求める時間は終わった。ただキーボードを叩け。';
+
+      try {
+        await this.hellAudioElement.play();
+      } catch(error) {
+        console.error(`\"hell.mp3\" の再生に失敗しました\n${error.message}`);
+      }
     } else if (state === RohdomopoTimerState.HEAVEN) {
       this.body.classList.remove('hell');
       this.body.classList.add('heaven');
       this.stateHeadingElement.textContent = '二十五分間の解放 〜 人間性の奪還';
       this.stateMessageElement.textContent = '見上げよ。世界は彩りに満ちている。思考の翼を広げ、どこへでも飛んでゆけ。';
+
+      try {
+        await this.heavenAudioElement.play();
+      } catch(error) {
+        console.error(`\"heaven.mp3\" の再生に失敗しました\n${error.message}`);
+      }
     }
   }
 
   /**
    * タイマーUIのアニメーション (UI更新) を要求します
    * 
-   * @type {() => void}
+   * @function
    */
   requestUpdatingTimerDisplay = () => {
     this.timerDisplayElement.textContent = this.rohdomopoTimer.textContent;
@@ -152,11 +187,10 @@ export class RohdomopoApp {
   }
 
   /**
-   * 起動時に行う動作です Webページ表示時に実行します
-   * 
-   * @async
+   * 起動時に行う動作です  
+   * Webページ表示時に実行します
    */
-  async initialize() {
+  initialize() {
     this.soundDialogElement.showModal();
     this.startPauseButtonElement.addEventListener('click', this.onClickStartPauseButton);
   }
