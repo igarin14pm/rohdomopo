@@ -1,0 +1,8 @@
+body, body.hell, body.heaven {
+  background-color: var(--color-normal-light);
+  color: var(--color-normal-dark);
+}
+
+hr, .hell hr, .heaven hr {
+  border-color: var(--color-normal-dark);
+}
