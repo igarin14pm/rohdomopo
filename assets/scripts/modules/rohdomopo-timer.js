@@ -109,6 +109,43 @@ export class CountDownTimer {
 }
 
 /**
+ * `RohdompoTimer.state` の値を静的プロパティに持つクラスです
+ */
+export class RohdomopoTimerState {
+
+  /**
+   * "五分間の徒労" 状態を表します
+   * 
+   * @readonly
+   * @type {string}
+   */
+  static get HELL() {
+    return 'hell'
+  }
+
+  /**
+   * "二十五分間の解放" 状態を表します
+   * 
+   * @readonly
+   * @type {string}
+   */
+  static get HEAVEN() {
+    return 'heaven';
+  }
+
+  /**
+   * タイマー開始前状態を表します
+   * 
+   * @readonly
+   * @type {string}
+   */
+  static get NORMAL() {
+    return 'normal';
+  }
+
+}
+
+/**
  * "ロードモポ" で使用される2つの状態を持ったタイマーを表すクラスです
  */
 export class RohdomopoTimer {
@@ -156,16 +193,16 @@ export class RohdomopoTimer {
 
   /**
    * タイマーの状態を表すバッキングフィールドです  
-   * "五分間の徒労" の場合の値は `'hell'` 、 "二十五分間の解放" の場合の値は `'heaven'` です
+   * `RohdomopoTimerState` のプロパティの値を代入します
    * 
    * @private
    * @type {string}
    */
-  #state;
+  #state = RohdomopoTimerState.NORMAL;
 
   /**
    * タイマーの状態を表します  
-   * "五分間の徒労" の場合の値は `'hell'` 、 "二十五分間の解放" の場合の値は `'heaven'` です
+   * "五分間の徒労" の場合は `'hell'` 、 "二十五分間の解放" の場合は `'heaven'` 、 タイマー開始前は `normal` を返します
    * 
    * @readonly
    * @type {string}
@@ -176,7 +213,7 @@ export class RohdomopoTimer {
 
   /**
    * タイマーの状態を表します  
-   * "五分間の徒労" の場合の値は `'hell'` 、 "二十五分間の解放" の場合の値は `'heaven'` です
+   * `RohdomopoTimerState` のプロパティの値を代入します
    * 
    * @type {string}
    */
@@ -186,16 +223,16 @@ export class RohdomopoTimer {
   }
 
   /**
-   * タイマーのUIに表示する文字列です
+   * タイマーのUIに表示する文字列です  
    * 状態に合わせてそれぞれのタイマーからの値を表示します
    * 
    * @readonly
    * @type {string}
    */
   get textContent() {
-    if (this.state === 'hell') {
+    if (this.state === RohdomopoTimerState.HELL) {
       return this.hellTimer.textContent;
-    } else if (this.state === 'heaven') {
+    } else if (this.state === RohdomopoTimerState.HEAVEN) {
       return this.heavenTimer.textContent;
     } else {
       return '';
@@ -229,22 +266,22 @@ export class RohdomopoTimer {
       return;
     }
 
-    if (this.state != 'heaven' && this.state != 'hell') {
-      this.state = 'hell'
+    if (this.state != RohdomopoTimerState.HELL && this.state != RohdomopoTimerState.HEAVEN) {
+      this.state = RohdomopoTimerState.HELL;
     }
 
     this.#isCountingDown = true;
     while (this.#isCountingDown) {
-      if (this.state === 'hell') {
+      if (this.state === RohdomopoTimerState.HELL) {
         await this.hellTimer.start();
         if (this.hellTimer.isFinished) {
-          this.state = 'heaven';
+          this.state = RohdomopoTimerState.HEAVEN;
           this.hellTimer.reset();
         }
-      } else if (this.state === 'heaven') {
+      } else if (this.state === RohdomopoTimerState.HEAVEN) {
         await this.heavenTimer.start();
         if (this.heavenTimer.isFinished) {
-          this.state = 'hell';
+          this.state = RohdomopoTimerState.HELL;
           this.heavenTimer.reset();
         }
       }

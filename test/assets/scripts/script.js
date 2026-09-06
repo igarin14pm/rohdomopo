@@ -365,7 +365,7 @@ await test('`RohdomopoTimer.state` - getter', async () => {
   const state4 = rohdomopoTimer.state;
   rohdomopoTimer.pause();
 
-  expect(state1).toBe(undefined);
+  expect(state1).toBe('normal');
   expect(state2).toBe('hell');
   expect(state3).toBe('heaven');
   expect(state4).toBe('hell');
@@ -437,7 +437,7 @@ await test('`RohdomopoTimer.start()` - 初回呼び出し時に `state` に `\'h
   const state2 = rohdomopoTimer.state;
   rohdomopoTimer.pause();
 
-  expect(state1).toBe(undefined);
+  expect(state1).toBe('normal');
   expect(state2).toBe('hell')
 });
 

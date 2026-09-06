@@ -1,4 +1,4 @@
-import { RohdomopoTimer } from './rohdomopo-timer.js';
+import { RohdomopoTimer, RohdomopoTimerState } from './rohdomopo-timer.js';
 
 /**
  * `RohdomopoTimer` とUIを橋渡しし、アプリを実行するクラス
@@ -99,12 +99,12 @@ export class RohdomopoApp {
    * @param {string} state `rohdomopoTimer.state` の値 `hell` もしくは `heaven` です
    */
   onStateChanged = (state) => {
-    if (state === 'hell') {
+    if (state === RohdomopoTimerState.HELL) {
       this.body.classList.remove('heaven');
       this.body.classList.add('hell');
       this.stateHeadingElement.textContent = '五分間の徒労 〜 人間性の剥奪';
       this.stateMessageElement.textContent = '問うな。理由を求める時間は終わった。ただキーボードを叩け。';
-    } else if (state === 'heaven') {
+    } else if (state === RohdomopoTimerState.HEAVEN) {
       this.body.classList.remove('hell');
       this.body.classList.add('heaven');
       this.stateHeadingElement.textContent = '二十五分間の解放 〜 人間性の奪還';
