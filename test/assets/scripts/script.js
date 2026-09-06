@@ -1,3 +1,5 @@
+'use strict';
+
 import { afterEach, beforeEach, expect, test } from './modules/test.js';
 import * as RohdomopoTimer from '../../../assets/scripts/modules/rohdomopo-timer.js';
 import * as App from '../../../assets/scripts/modules/app.js';

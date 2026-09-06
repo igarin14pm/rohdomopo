@@ -1,3 +1,5 @@
+'use strict';
+
 import { setInterval } from '../../../common/scripts/timers-promises.js';
 
 /**

@@ -1,3 +1,5 @@
+'use strict';
+
 import { RohdomopoTimer, RohdomopoTimerState } from './rohdomopo-timer.js';
 
 /**
