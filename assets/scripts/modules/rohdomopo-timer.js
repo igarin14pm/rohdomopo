@@ -57,10 +57,11 @@ export class CountDownTimer {
    */
   get textContent() {
     function format(number) {
-      if (number < 10) {
-        return `0${number}`;
+      const int = Math.floor(number)
+      if (int < 10) {
+        return `0${int}`;
       } else {
-        return String(number);
+        return String(int);
       }
     }
     const minute = Math.floor(this.currentTime_cs / 100 / 60);
@@ -90,13 +91,19 @@ export class CountDownTimer {
     if (this.currentTime_cs <= 0) {
       return;
     }
+
+    const dateOnStart = new Date();
+    const currentTimeOnStart_cs = this.currentTime_cs;
+
     this.#isCountingDown = true;
     for await (const i of setInterval(10)) {
-      this.currentTime_cs -= 1;
+      const date = new Date();
+      this.currentTime_cs = currentTimeOnStart_cs - (date.getTime() - dateOnStart.getTime()) / 10;
 
       this.onCountingDown();
 
-      if (this.currentTime_cs === 0) {
+      if (this.currentTime_cs <= 0) {
+        this.currentTime_cs = 0;
         this.pause();
       }
       if (!this.#isCountingDown) {
