@@ -7,54 +7,63 @@ export class RohdomopoApp {
 
   /**
    * DOMで取得した HTML の `<body>`
+   * 
    * @type {HTMLBodyElement}
    */
   body;
 
   /**
    * DOMで取得した "このWebアプリでは音声が流れます" ダイアログの要素
+   * 
    * @type {HTMLDialogElement}
    */
   soundDialogElement;
 
   /**
    * DOMで取得したタイマーの状態を表示する `<h1>` 要素
+   * 
    * @type {HTMLHeadingElement}
    */
   stateHeadingElement;
 
   /**
    * DOMで取得した文学的な指示文を表示する `<p>` 要素
+   * 
    * @type {HTMLParagraphElement}
    */
   stateMessageElement;
 
   /**
    * DOMで取得したタイマーの残り時間を表示するパラグラフ要素
+   * 
    * @type {HTMLParagraphElement}
    */
   timerDisplayElement;
 
   /**
    * DOMで取得した "カウントダウンを開始・停止" ボタンの要素
+   * 
    * @type {HTMLButtonElement}
    */
   startPauseButtonElement;
 
   /**
    * アプリで使用する `RohdomopoTimer` のインスタンス
+   * 
    * @type {RohdomopoTimer}
    */
   rohdomopoTimer;
 
   /**
    * `window.requestAnimationFrame()` の返り値である requestId
+   * 
    * @type {number | null}
    */
   requestAnimationId = null;
 
   /**
    * `RohdomopoApp` のインスタンスを生成します
+   * 
    * @param {HTMLBodyElement} body DOMで取得した HTML の `<body>`
    * @param {HTMLDialogElement} soundDialogElement DOMで取得した "このWebアプリでは音声が流れます" と表示する `<dialog>` 要素
    * @param {HTMLHeadingElement} stateHeadingElement DOMで取得したタイマーの状態を表示する `<h1>` 要素
@@ -86,6 +95,7 @@ export class RohdomopoApp {
 
   /**
    * `rohdomopoTimer.state` が変化した際に呼び出されるコールバックです
+   * 
    * @param {string} state `rohdomopoTimer.state` の値 `hell` もしくは `heaven` です
    */
   onStateChanged = (state) => {
@@ -104,6 +114,7 @@ export class RohdomopoApp {
 
   /**
    * タイマーUIのアニメーション (UI更新) を要求します
+   * 
    * @type {() => void}
    */
   requestUpdatingTimerDisplay = () => {
@@ -113,6 +124,8 @@ export class RohdomopoApp {
 
   /**
    * タイマーUIのアニメーション (UI更新) をキャンセルします
+   * 
+   * @async
    */
   async cancelUpdatingTimerDisplay() {
     if (this.requestAnimationId != null) {
@@ -123,6 +136,7 @@ export class RohdomopoApp {
 
   /**
    * "カウントダウンを開始・停止" ボタンがクリックされた際の動作です
+   * 
    * @type {() => void}
    */
   onClickStartPauseButton = () => {
@@ -139,6 +153,8 @@ export class RohdomopoApp {
 
   /**
    * 起動時に行う動作です Webページ表示時に実行します
+   * 
+   * @async
    */
   async initialize() {
     this.soundDialogElement.showModal();

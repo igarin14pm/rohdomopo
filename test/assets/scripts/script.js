@@ -9,6 +9,11 @@ console.info('Test run started... 🫡');
 
 // -------- html --------
 
+/**
+ * テスト用のHTML要素を子要素として持つ `<div>` 要素
+ * 
+ * @type {HTMLDivElement}
+ */
 const htmlContainer = document.createElement('div');
 
 beforeEach(() => {

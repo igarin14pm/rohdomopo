@@ -7,12 +7,14 @@ export class CountDownTimer {
 
   /**
    * タイマーの長さ (センチ秒: 100分の1秒)
+   * 
    * @type {number}
    */
   duration_cs;
 
   /**
    * タイマーの残り時間 (センチ秒: 100分の1秒)
+   * 
    * @type {number}
    */
   currentTime_cs;
@@ -21,15 +23,17 @@ export class CountDownTimer {
    * タイマーがカウントダウン中かどうかを表します  
    * タイマー作動中に `false` を代入するとタイマーが停止します  
    * `start()` 、 `pause()` 、 `reset()` によって制御されるため、通常この変数を直接操作することはありません
-   * @type {boolean}
+   * 
    * @private
+   * @type {boolean}
    */
   #isCountingDown = false;
 
   /**
    * タイマーのカウントダウンが終了したかどうか (残り0秒かどうか) を表します
-   * @type {boolean}
+   * 
    * @readonly
+   * @type {boolean}
    */
   get isFinished() {
     return this.currentTime_cs === 0;
@@ -37,8 +41,9 @@ export class CountDownTimer {
 
   /**
    * UIに表示する時間の文字列を表します
-   * @type {string}
+   * 
    * @readonly
+   * @type {string}
    */
   get textContent() {
     function format(number) {
@@ -56,6 +61,7 @@ export class CountDownTimer {
 
   /**
    * `CountDownTimer` のインスタンスを生成します
+   * 
    * @param {number} duration_ms タイマーの長さ (ミリ秒) 100分の1秒単位で演算が行われるため、1の位の値は無視されます
    */
   constructor(duration_ms) {
@@ -65,6 +71,8 @@ export class CountDownTimer {
 
   /**
    * タイマーを開始します
+   * 
+   * @async
    */
   async start() {
     if (this.currentTime_cs <= 0) {
@@ -105,21 +113,23 @@ export class CountDownTimer {
  */
 export class RohdomopoTimer {
 
-  
   /**
    * "五分間の徒労" 状態用の `CountDownTimer` のインスタンス
+   * 
    * @type {CountDownTimer}
   */
   hellTimer;
  
   /**
    * "二十五分間の解放" 状態用の `CountDownTimer` のインスタンス
+   * 
    * @type {CountDownTimer}
   */
   heavenTimer;
 
   /**
    * 状態が変化した際に呼び出されるコールバック
+   * 
    * @type {(state: string) => void}
    */
   onStateChanged;
@@ -128,15 +138,17 @@ export class RohdomopoTimer {
    * カウントダウン中かどうかを表します  
    * `false` を代入するとタイマーが停止します  
    * `start()`　、 `pause()` によって制御され、通常この変数を直接操作することはありません
-   * @type {boolean}
+   * 
    * @private
+   * @type {boolean}
    */
   #isCountingDown = false;
 
   /**
    * カウントダウン中かどうかを表します
-   * @type {boolean}
+   * 
    * @readonly
+   * @type {boolean}
    */
   get isCountingDown() {
     return this.#isCountingDown;
@@ -145,16 +157,18 @@ export class RohdomopoTimer {
   /**
    * タイマーの状態を表すバッキングフィールドです  
    * "五分間の徒労" の場合の値は `'hell'` 、 "二十五分間の解放" の場合の値は `'heaven'` です
-   * @type {string}
+   * 
    * @private
+   * @type {string}
    */
   #state;
 
   /**
    * タイマーの状態を表します  
    * "五分間の徒労" の場合の値は `'hell'` 、 "二十五分間の解放" の場合の値は `'heaven'` です
-   * @type {string}
+   * 
    * @readonly
+   * @type {string}
    */
   get state() {
     return this.#state;
@@ -163,6 +177,7 @@ export class RohdomopoTimer {
   /**
    * タイマーの状態を表します  
    * "五分間の徒労" の場合の値は `'hell'` 、 "二十五分間の解放" の場合の値は `'heaven'` です
+   * 
    * @type {string}
    */
   set state(newValue) {
@@ -173,8 +188,9 @@ export class RohdomopoTimer {
   /**
    * タイマーのUIに表示する文字列です
    * 状態に合わせてそれぞれのタイマーからの値を表示します
-   * @type {string}
+   * 
    * @readonly
+   * @type {string}
    */
   get textContent() {
     if (this.state === 'hell') {
@@ -188,6 +204,7 @@ export class RohdomopoTimer {
 
   /**
    * `RohdomopoTimer` のインスタンスを生成します
+   * 
    * @param {number} hellDuration_ms "五分間の徒労" 状態用タイマーの長さ (ミリ秒) 100分の1秒単位で演算が行われるため、1の位の値は無視されます
    * @param {number} heavenDuration_ms "二十五分間の解放" 状態用のタイマーの長さ (ミリ秒) 100分の1秒単位で演算が行われるため、1の位の値は無視されます
    * @param {(state: string) => void} onStateChanged 状態が変化した際に呼び出されるコールバック
@@ -204,6 +221,8 @@ export class RohdomopoTimer {
 
   /**
    * タイマーを開始します
+   * 
+   * @async
    */
   async start() {
     if (this.#isCountingDown) {
