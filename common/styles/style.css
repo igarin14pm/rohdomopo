@@ -69,6 +69,7 @@ details {
   border-color: var(--color-normal-dark);
   border-radius: var(--border-radius);
   padding: 16px;
+  transition: border-color var(--color-transition-duration), background-color var(--color-transition-duration), color var(--color-transition-duration);
 }
 
 .hell details {
@@ -95,7 +96,7 @@ dialog {
   max-width: 800px;
   background-color: var(--color-normal-light);
   color: var(--color-normal-dark);
-  transition: background-color var(--color-transition-duration), color var(--color-transition-duration);
+  transition: border-color var(--color-transition-duration), background-color var(--color-transition-duration), color var(--color-transition-duration);
 }
 
 .hell dialog {
@@ -140,6 +141,7 @@ hr {
   border-style: solid;
   border-width: calc(var(--border-width) / 2); 
   border-color: var(--color-normal-dark);
+  transition: border-color var(--color-transition-duration);
 }
 
 .hell hr {
@@ -160,9 +162,7 @@ p {
 
 .button {
   margin: calc(var(--body-line-height) * var(--button-font-size)) 0;
-  border-style: solid;
-  border-width: 1px;
-  border-color: var(--color-normal-dark);
+  border: none;
   border-radius: calc(var(--body-line-height) * var(--button-font-size) + var(--button-padding-vertical) * 2);
   padding: var(--button-padding-vertical) 24px;
   background-color: var(--color-normal-dark);
