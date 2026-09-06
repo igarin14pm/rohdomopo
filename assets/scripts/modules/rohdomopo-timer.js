@@ -64,8 +64,8 @@ export class CountDownTimer {
         return String(int);
       }
     }
-    const minute = Math.floor(this.currentTime_cs / 100 / 60);
-    const second = Math.floor(this.currentTime_cs / 100) % 60;
+    const minute = this.currentTime_cs / 100 / 60;
+    const second = this.currentTime_cs / 100 % 60;
     const centiSecond = this.currentTime_cs % 100;
     return `${format(minute)}:${format(second)}.${format(centiSecond)}`;
   }
