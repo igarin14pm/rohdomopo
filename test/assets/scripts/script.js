@@ -517,7 +517,7 @@ async function startTests() {
     expect(state4).toBe('hell');
   });
 
-  await test('`RohdomopoTimer.setState()`', () => {
+  await test('`RohdomopoTimer.state` - setter', () => {
     let isOnStateChangedCallbackCalled1 = false;
     let isOnStateChangedCallbackCalled2 = false;
     const rohdomopoTimer1 = new RohdomopoTimer.RohdomopoTimer(
@@ -535,8 +535,8 @@ async function startTests() {
       }
     );
 
-    rohdomopoTimer1.setState('hell');
-    rohdomopoTimer2.setState('heaven');
+    rohdomopoTimer1.state = 'hell';
+    rohdomopoTimer2.state = 'heaven';
 
     expect(rohdomopoTimer1.state).toBe('hell');
     expect(isOnStateChangedCallbackCalled1).toBe(true);
@@ -558,12 +558,12 @@ async function startTests() {
 
     const noState1 = rohdomopoTimer1.textContent;
     const noState2 = rohdomopoTimer2.textContent;
-    rohdomopoTimer1.setState('hell');
-    rohdomopoTimer2.setState('hell');
+    rohdomopoTimer1.state = 'hell';
+    rohdomopoTimer2.state = 'hell';
     const hell1 = rohdomopoTimer1.textContent;
     const hell2 = rohdomopoTimer2.textContent;
-    rohdomopoTimer1.setState('heaven');
-    rohdomopoTimer2.setState('heaven');
+    rohdomopoTimer1.state = 'heaven';
+    rohdomopoTimer2.state = 'heaven';
     const heaven1 = rohdomopoTimer1.textContent;
     const heaven2 = rohdomopoTimer2.textContent;
 
@@ -590,8 +590,8 @@ async function startTests() {
   await test('`RohdomopoTimer.start()` - `state` に合わせたタイマーが開始される', async () => {
     const rohdomopoTimer1 = new RohdomopoTimer.RohdomopoTimer(5 * 60 * 1000, 25 * 60 * 1000, () => { });
     const rohdomopoTimer2 = new RohdomopoTimer.RohdomopoTimer(5 * 60 * 1000, 25 * 60 * 1000, () => { });
-    rohdomopoTimer1.setState('hell');
-    rohdomopoTimer2.setState('heaven');
+    rohdomopoTimer1.state = 'hell';
+    rohdomopoTimer2.state = 'heaven';
 
     rohdomopoTimer1.start();
     rohdomopoTimer2.start();
@@ -608,8 +608,8 @@ async function startTests() {
   await test('`RohdomopoTimer.start()` - タイマー終了時に自動的にリセットされる', async () => {
     const rohdomopoTimer1 = new RohdomopoTimer.RohdomopoTimer(100, 25 * 60 * 1000, () => { });
     const rohdomopoTimer2 = new RohdomopoTimer.RohdomopoTimer(5 * 60 * 1000, 100, () => { });
-    rohdomopoTimer1.setState('hell');
-    rohdomopoTimer2.setState('heaven');
+    rohdomopoTimer1.state = 'hell';
+    rohdomopoTimer2.state = 'heaven';
 
     rohdomopoTimer1.start();
     rohdomopoTimer2.start();
@@ -631,8 +631,8 @@ async function startTests() {
   await test('`RohdomopoTimer.start()` - タイマー終了時に自動的に `state` が切り替わる', async () => {
     const rohdomopoTimer1 = new RohdomopoTimer.RohdomopoTimer(100, 25 * 60 * 1000, () => { });
     const rohdomopoTimer2 = new RohdomopoTimer.RohdomopoTimer(5 * 60 * 1000, 100, () => { });
-    rohdomopoTimer1.setState('hell');
-    rohdomopoTimer2.setState('heaven');
+    rohdomopoTimer1.state = 'hell';
+    rohdomopoTimer2.state = 'heaven';
 
     rohdomopoTimer1.start();
     rohdomopoTimer2.start();
@@ -649,8 +649,8 @@ async function startTests() {
   await test('`RohdomopoTimer.pause()`', async () => {
     const rohdomopoTimer1 = new RohdomopoTimer.RohdomopoTimer(5 * 60 * 1000, 25 * 60 * 1000, () => { });
     const rohdomopoTimer2 = new RohdomopoTimer.RohdomopoTimer(5 * 60 * 1000, 25 * 60 * 1000, () => { });
-    rohdomopoTimer1.setState('hell');
-    rohdomopoTimer2.setState('heaven');
+    rohdomopoTimer1.state = 'hell';
+    rohdomopoTimer2.state = 'heaven';
 
     rohdomopoTimer1.start();
     rohdomopoTimer2.start();
