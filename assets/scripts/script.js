@@ -69,9 +69,7 @@ const rohdomopoApp = new RohdomopoApp(
   stateHeadingElement,
   stateMessageElement,
   timerDisplayElement,
-  startPauseButtonElement,
-  10 * 1000, // tmp
-  25 * 1000 // tmp
+  startPauseButtonElement
 );
 
 // DOM読み込み終了時に実行
