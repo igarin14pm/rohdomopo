@@ -118,11 +118,10 @@ export class RohdomopoApp {
   /**
    * `rohdomopoTimer.state` が変化した際に呼び出されるコールバックです
    * 
-   * @async
    * @function
    * @param {string} state `rohdomopoTimer.state` の値 `hell` もしくは `heaven` です
    */
-  onStateChanged = async (state) => {
+  onStateChanged = (state) => {
     if (state === RohdomopoTimerState.HELL) {
       this.body.classList.remove('heaven');
       this.body.classList.add('hell');
@@ -131,7 +130,7 @@ export class RohdomopoApp {
       this.stateMessageElement.textContent = '問うな。理由を求める時間は終わった。ただキーボードを叩け。';
 
       try {
-        await this.hellAudioElement.play();
+        this.hellAudioElement.play();
       } catch(error) {
         console.error(`\"hell.mp3\" の再生に失敗しました\n${error.message}`);
       }
@@ -142,7 +141,7 @@ export class RohdomopoApp {
       this.stateMessageElement.textContent = '見上げよ。世界は彩りに満ちている。思考の翼を広げ、どこへでも飛んでゆけ。';
 
       try {
-        await this.heavenAudioElement.play();
+        this.heavenAudioElement.play();
       } catch(error) {
         console.error(`\"heaven.mp3\" の再生に失敗しました\n${error.message}`);
       }

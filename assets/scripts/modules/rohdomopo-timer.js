@@ -169,7 +169,8 @@ export class RohdomopoTimer {
   /**
    * 状態が変化した際に呼び出されるコールバック
    * 
-   * @type {(state: string) => Promise<void>}
+   * @function
+   * @type {(state: string) => void}
    */
   onStateChanged;
 
@@ -214,15 +215,14 @@ export class RohdomopoTimer {
   }
 
   /**
-   * タイマーの状態を表します  
+   * タイマーの状態を設定します  
    * `RohdomopoTimerState` のプロパティの値を代入します
    * 
-   * @async
    * @param {string} 新しい `state` の値
    */
-  async setState(newValue) {
+  setState(newValue) {
     this.#state = newValue;
-    await this.onStateChanged(this.#state);
+    this.onStateChanged(this.#state);
   }
 
   /**
@@ -247,7 +247,7 @@ export class RohdomopoTimer {
    * 
    * @param {number} hellDuration_ms "五分間の徒労" 状態用タイマーの長さ (ミリ秒) 100分の1秒単位で演算が行われるため、1の位の値は無視されます
    * @param {number} heavenDuration_ms "二十五分間の解放" 状態用のタイマーの長さ (ミリ秒) 100分の1秒単位で演算が行われるため、1の位の値は無視されます
-   * @param {(state: string) => Promise<void>} onStateChanged 状態が変化した際に呼び出されるコールバック
+   * @param {(state: string) => void} onStateChanged 状態が変化した際に呼び出されるコールバック
    */
   constructor(
     hellDuration_ms,

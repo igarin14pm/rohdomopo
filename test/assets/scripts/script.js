@@ -517,7 +517,7 @@ async function startTests() {
     expect(state4).toBe('hell');
   });
 
-  await test('`RohdomopoTimer.setState()`', async () => {
+  await test('`RohdomopoTimer.setState()`', () => {
     let isOnStateChangedCallbackCalled1 = false;
     let isOnStateChangedCallbackCalled2 = false;
     const rohdomopoTimer1 = new RohdomopoTimer.RohdomopoTimer(
@@ -544,7 +544,7 @@ async function startTests() {
     expect(isOnStateChangedCallbackCalled2).toBe(true);
   });
 
-  await test('`RohdomopoTimer.textContent`', async () => {
+  await test('`RohdomopoTimer.textContent`', () => {
     const rohdomopoTimer1 = new RohdomopoTimer.RohdomopoTimer(
       5 * 60 * 1000, 
       25 * 60 * 1000, 
