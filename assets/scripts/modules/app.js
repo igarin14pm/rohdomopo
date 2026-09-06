@@ -88,6 +88,8 @@ export class RohdomopoApp {
    * @param {HTMLParagraphElement} stateMessageElement DOMで取得した文学的な指示文を表示する `<p>` 要素
    * @param {HTMLParagraphElement} timerDisplayElement DOMで取得したタイマーの残り時間を表示する `<p>` 要素
    * @param {HTMLButtonElement} startPauseButtonElement DOMで取得したカウントダウンを開始・停止する `<button>` 要素
+   * @param {number} hellTimerDuration_ms "五分間の徒労" 状態タイマーの時間 (ミリ秒)
+   * @param {number} heavenTimerDuration_ms "二十五分間の解放" 状態タイマーの時間 (ミリ秒)
    */
   constructor(
     body,
@@ -98,6 +100,8 @@ export class RohdomopoApp {
     stateMessageElement,
     timerDisplayElement,
     startPauseButtonElement,
+    hellTimerDuration_ms = 5 * 60 * 1000,
+    heavenTimerDuration_ms = 25 * 60 * 1000
   ) {
     this.body = body;
     this.soundDialogElement = soundDialogElement;
@@ -109,8 +113,8 @@ export class RohdomopoApp {
     this.startPauseButtonElement = startPauseButtonElement;
 
     this.rohdomopoTimer = new RohdomopoTimer(
-      70 * 1000, // tmp
-      70 * 1000, // tmp
+      hellTimerDuration_ms,
+      heavenTimerDuration_ms,
       this.onCountingDown,
       this.onStateChanged
     );
