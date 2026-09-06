@@ -88,6 +88,8 @@ export class RohdomopoApp {
    * @param {HTMLParagraphElement} stateMessageElement DOMで取得した文学的な指示文を表示する `<p>` 要素
    * @param {HTMLParagraphElement} timerDisplayElement DOMで取得したタイマーの残り時間を表示する `<p>` 要素
    * @param {HTMLButtonElement} startPauseButtonElement DOMで取得したカウントダウンを開始・停止する `<button>` 要素
+   * @param {number} hellTimerDuration_ms "五分間の徒労" 状態タイマーの時間 (ミリ秒)
+   * @param {number} heavenTimerDuration_ms "二十五分間の解放" 状態タイマーの時間 (ミリ秒)
    */
   constructor(
     body,
@@ -98,6 +100,8 @@ export class RohdomopoApp {
     stateMessageElement,
     timerDisplayElement,
     startPauseButtonElement,
+    hellTimerDuration_ms = 5 * 60 * 1000,
+    heavenTimerDuration_ms = 25 * 60 * 1000
   ) {
     this.body = body;
     this.soundDialogElement = soundDialogElement;
@@ -109,10 +113,26 @@ export class RohdomopoApp {
     this.startPauseButtonElement = startPauseButtonElement;
 
     this.rohdomopoTimer = new RohdomopoTimer(
-      15 * 1000, // tmp
-      25 * 1000, // tmp
+      hellTimerDuration_ms,
+      heavenTimerDuration_ms,
+      this.onCountingDown,
       this.onStateChanged
     );
+  }
+
+  /**
+   * カウントダウン中に実行されるコールバック関数です
+   * 
+   * @type {() => void}
+   */
+  onCountingDown = () => {
+    const oneMinuteLeftClassName = 'one-minute-left'
+    const currentTime_cs = this.rohdomopoTimer.currentTime_cs;
+    if (currentTime_cs < 60 * 100 && !this.timerDisplayElement.classList.contains(oneMinuteLeftClassName)) {
+      this.timerDisplayElement.classList.add(oneMinuteLeftClassName);
+    } else if (currentTime_cs > 60 * 100 && this.timerDisplayElement.classList.contains(oneMinuteLeftClassName)) {
+      this.timerDisplayElement.classList.remove(oneMinuteLeftClassName);
+    }
   }
 
   /**
