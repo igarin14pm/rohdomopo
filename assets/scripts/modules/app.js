@@ -142,29 +142,40 @@ export class RohdomopoApp {
    * @param {string} state `rohdomopoTimer.state` の値 `hell` もしくは `heaven` です
    */
   onStateChanged = (state) => {
-    if (state === RohdomopoTimerState.HELL) {
+    if (state === RohdomopoTimerState.HELL) { // "五分間の徒労" 状態に変化時
+
+      // `<body>` の class を `.hell` に変更
       this.body.classList.remove('heaven');
       this.body.classList.add('hell');
 
+      // ページのテキストを変更
       this.stateHeadingElement.textContent = '五分間の徒労 〜 人間性の剥奪';
       this.stateMessageElement.textContent = '問うな。理由を求める時間は終わった。ただキーボードを叩け。';
 
+      // hell.mp3 を再生
       try {
         this.hellAudioElement.play();
       } catch(error) {
         console.error(`\"hell.mp3\" の再生に失敗しました\n${error.message}`);
       }
-    } else if (state === RohdomopoTimerState.HEAVEN) {
+
+    } else if (state === RohdomopoTimerState.HEAVEN) { // "二十五分間の解放" 状態に変化時
+
+      // `<body>` の class を `.heaven` に変更
       this.body.classList.remove('hell');
       this.body.classList.add('heaven');
+
+      // ページのテキストを変更
       this.stateHeadingElement.textContent = '二十五分間の解放 〜 人間性の奪還';
       this.stateMessageElement.textContent = '見上げよ。世界は彩りに満ちている。思考の翼を広げ、どこへでも飛んでゆけ。';
 
+      // heaven.mp3 を再生
       try {
         this.heavenAudioElement.play();
       } catch(error) {
         console.error(`\"heaven.mp3\" の再生に失敗しました\n${error.message}`);
       }
+
     }
   }
 
@@ -196,14 +207,28 @@ export class RohdomopoApp {
    * @type {() => void}
    */
   onClickStartPauseButton = () => {
-    if (this.rohdomopoTimer.isCountingDown) {
+    if (this.rohdomopoTimer.isCountingDown) { // タイマー稼働中
+
+      // タイマーを一時停止
       this.rohdomopoTimer.pause();
+
+      // 残り時間UIの更新を停止
       this.cancelUpdatingTimerDisplay();
+
+      // ボタンのテキストを変更
       this.startPauseButtonElement.textContent = 'カウントダウンを再開';
-    } else {
+
+    } else { // タイマー停止中
+
+      // タイマーを開始
       this.rohdomopoTimer.start();
+
+      // 残り時間UIの更新を開始
       this.requestUpdatingTimerDisplay();
+
+      // ボタンのテキストを変更
       this.startPauseButtonElement.textContent = 'カウントダウンを一時停止';
+
     }
   }
 
@@ -212,8 +237,13 @@ export class RohdomopoApp {
    * Webページ表示時に実行します
    */
   initialize() {
+
+    // "このWebアプリでは音声が流れます" ダイアログをモーダルで表示
     this.soundDialogElement.showModal();
+
+    // "カウントダウンを開始・一時停止" ボタンにリスナーを設定
     this.startPauseButtonElement.addEventListener('click', this.onClickStartPauseButton);
+    
   }
 
 }
