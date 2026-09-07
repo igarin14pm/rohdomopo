@@ -36,12 +36,6 @@ ES Modules を使用しているため、 index.html をファイルとして開
 ### macOS Tahoe 26.6.2
 
 - Google Chrome 152.0.7977.76
-- Safari 26.6.2
-
-### iPadOS 26.6
-
-- Google Chrome 152.0.7977.64 (テストページを除く)
-- Safari (テストページを除く)
 
 ### Android 17
 
