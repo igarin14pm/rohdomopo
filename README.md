@@ -27,7 +27,7 @@ https://igarin14pm.github.io/rohdomopo/
 
 ## ローカルでの実行方法
 
-リポジトリをクローンし、Node.js の `npx serve` 等でローカルサーバを立てて実行してください。
+リポジトリをクローンし、Node.js の `npx http-server` 等でローカルサーバを立てて実行してください。
 
 ES Modules を使用しているため、 index.html をファイルとして開く方法では正常に動作しません。
 
