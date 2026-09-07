@@ -181,19 +181,31 @@ class ReceivedValue {
  * @param {() => Promise<void> | void} testFn テストを実行する関数
  */
 export async function test(name, testFn) {
+  
   isAsserted = false;
+
+  // `beforeEach()` で登録したコールバックを呼び出す
   beforeEachCallback();
+
+  // テストを実行
   try {
     await testFn();
   } catch(error) {
+    // テスト失敗のメッセージを出力
     console.error(`Test failed: ${name}\n${error.message}`);
     return;
   }
+
+  // `testFn` 内で Assert されていない場合にエラーメッセージを出力
   if (!isAsserted) {
     console.error(`Test failed: ${name}\nexpect functions not called.`);
     return;
   }
+
+  // `afterEach()` で登録したコールバックを呼び出す
   afterEachCallback();
+
+  // テスト完了のメッセージ
   console.info(`Test passed: ${name}`);
 }
 

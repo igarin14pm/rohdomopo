@@ -56,6 +56,12 @@ export class CountDownTimer {
    * @type {string}
    */
   get textContent() {
+
+    /**
+     * 時刻表示用に、小数点以下を切り捨てし、1桁のときはゼロ埋めした、2桁以上の数値の文字列にフォーマットします
+     * @param {number} number フォーマットする数値
+     * @returns {string} フォーマットされた数値の文字列
+     */
     function format(number) {
       const int = Math.floor(number)
       if (int < 10) {
@@ -64,10 +70,13 @@ export class CountDownTimer {
         return String(int);
       }
     }
+
+    // 返り値を生成
     const minute = this.currentTime_cs / 100 / 60;
     const second = this.currentTime_cs / 100 % 60;
     const centiSecond = this.currentTime_cs % 100;
     return `${format(minute)}:${format(second)}.${format(centiSecond)}`;
+
   }
 
   /**
@@ -88,24 +97,36 @@ export class CountDownTimer {
    * @async
    */
   async start() {
+
+    // 残り時間が0秒以下のときは早期リターン
     if (this.currentTime_cs <= 0) {
       return;
     }
 
+    // 関数呼び出し時の日時と `this.currentTime_cs` を取得
     const dateOnStart = new Date();
     const currentTimeOnStart_cs = this.currentTime_cs;
 
+    // `this.isCountingDown` の値を更新
     this.#isCountingDown = true;
-    for await (const i of setInterval(10)) {
+
+    for await (const i of setInterval(10)) { // 10 ms 間隔でループ処理
+
+      // ループ呼び出し時の日時と `start()` 呼び出し時の日時から経過時間を計算
+      // 開発当初は `this.currentTime_cs += 1` としていたが、`setInterval()` によって無視できないレベルの時間の誤差が発生したため、現在時刻と開始時刻の差分で計算するように変更
       const date = new Date();
       this.currentTime_cs = currentTimeOnStart_cs - (date.getTime() - dateOnStart.getTime()) / 10;
 
+      // カウントダウン中のコールバックを実行
       this.onCountingDown();
 
+      // `this.currentTime_cs` が `0` 以下になったらタイマーを停止
       if (this.currentTime_cs <= 0) {
         this.currentTime_cs = 0;
         this.pause();
       }
+
+      // `this.#isCountingDown` に `false` が代入されたらループを終了、タイマーを停止
       if (!this.#isCountingDown) {
         break;
       }
@@ -252,9 +273,9 @@ export class RohdomopoTimer {
    * @type {number}
    */
   get currentTime_cs() {
-    if (this.state === RohdomopoTimerState.HELL) {
+    if (this.state === RohdomopoTimerState.HELL) { // "五分間の徒労" 時は `this.hellTimer` の時間を返す
       return this.hellTimer.currentTime_cs;
-    } else if (this.state === RohdomopoTimerState.HEAVEN) {
+    } else if (this.state === RohdomopoTimerState.HEAVEN) { // "二十五分間の解放" 時は `this.heavenTimer` の値を返す
       return this.heavenTimer.currentTime_cs;
     } else {
       return 0;
@@ -269,9 +290,9 @@ export class RohdomopoTimer {
    * @type {string}
    */
   get textContent() {
-    if (this.state === RohdomopoTimerState.HELL) {
+    if (this.state === RohdomopoTimerState.HELL) { // "五分間の徒労" 時は `this.hellTimer` の時間を返す
       return this.hellTimer.textContent;
-    } else if (this.state === RohdomopoTimerState.HEAVEN) {
+    } else if (this.state === RohdomopoTimerState.HEAVEN) { // "二十五分間の解放" 時は `this.heavenTimer` の値を返す
       return this.heavenTimer.textContent;
     } else {
       return '';
@@ -303,28 +324,45 @@ export class RohdomopoTimer {
    * @async
    */
   async start() {
+
+    // タイマー稼働中は早期リターン
     if (this.#isCountingDown) {
       return;
     }
 
+    // 初回呼び出し時に状態を "五分間の徒労" に変更
     if (this.state != RohdomopoTimerState.HELL && this.state != RohdomopoTimerState.HEAVEN) {
       this.state = RohdomopoTimerState.HELL;
     }
 
+    // `this.isCountingDown` の値を更新
     this.#isCountingDown = true;
-    while (this.#isCountingDown) {
-      if (this.state === RohdomopoTimerState.HELL) {
+
+    while (this.#isCountingDown) { // タイマー稼働開始、一時停止するまでループ処理
+      if (this.state === RohdomopoTimerState.HELL) { // "五分間の徒労" 状態時
+
+        // "五分間の徒労" タイマーを開始
         await this.hellTimer.start();
+        // タイマー一時停止もしくは終了まで待機
+
+        // タイマー終了時には "二十五分間の解放" 状態に切り替え
         if (this.hellTimer.isFinished) {
           this.state = RohdomopoTimerState.HEAVEN;
           this.hellTimer.reset();
         }
-      } else if (this.state === RohdomopoTimerState.HEAVEN) {
+
+      } else if (this.state === RohdomopoTimerState.HEAVEN) { // "二十五分間の解放" 状態時
+
+        // "二十五分間の解放" タイマーを開始
         await this.heavenTimer.start();
+        // タイマー一時停止もしくは終了まで待機
+
+        // タイマー終了時には "五分間の徒労" 状態に切り替え
         if (this.heavenTimer.isFinished) {
           this.state = RohdomopoTimerState.HELL;
           this.heavenTimer.reset();
         }
+
       }
     }
   }
