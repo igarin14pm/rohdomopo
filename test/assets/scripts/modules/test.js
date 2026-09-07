@@ -14,7 +14,7 @@ let isAsserted = false;
  * 
  * @type {() => void}
  */
-let beforeEachCallback;
+let onBeforeEach;
 
 /**
  * 各テストの前に実行される関数を設定します
@@ -22,7 +22,7 @@ let beforeEachCallback;
  * @param {() => void} callback 処理を記述したコールバック関数
  */
 export function beforeEach(callback) {
-  beforeEachCallback = callback;
+  onBeforeEach = callback;
 }
 
 /**
@@ -30,7 +30,7 @@ export function beforeEach(callback) {
  * 
  * @type {() => void}
  */
-let afterEachCallback;
+let onAfterEach;
 
 /**
  * 各テストの後に実行される関数を設定します
@@ -38,7 +38,7 @@ let afterEachCallback;
  * @param {() => void} callback 処理を記述したコールバック関数
  */
 export function afterEach(callback) {
-  afterEachCallback = callback;
+  onAfterEach = callback;
 }
 
 /**
@@ -185,28 +185,31 @@ export async function test(name, testFn) {
   isAsserted = false;
 
   // `beforeEach()` で登録したコールバックを呼び出す
-  beforeEachCallback();
+  onBeforeEach();
 
   // テストを実行
   try {
+    
     await testFn();
+
+    if (!isAsserted) {
+      // `testFn` 内で Assert されていない場合にエラーメッセージを出力
+      console.error(`Test failed: ${name}\nexpect functions not called.`);
+    } else {
+      // テスト完了のメッセージ
+      console.info(`Test passed: ${name}`);
+    }
+
   } catch(error) {
+
     // テスト失敗のメッセージを出力
     console.error(`Test failed: ${name}\n${error.message}`);
-    return;
-  }
 
-  // `testFn` 内で Assert されていない場合にエラーメッセージを出力
-  if (!isAsserted) {
-    console.error(`Test failed: ${name}\nexpect functions not called.`);
-    return;
   }
 
   // `afterEach()` で登録したコールバックを呼び出す
-  afterEachCallback();
+  onAfterEach();
 
-  // テスト完了のメッセージ
-  console.info(`Test passed: ${name}`);
 }
 
 /**
