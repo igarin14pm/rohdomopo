@@ -1,18 +1,35 @@
 @import url('https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,100..900;1,100..900&display=swap');
 
-@keyframes one-minute-left {
+@keyframes one-minute-left-hell {
   
   0% {
     opacity: 100%;
   }
 
   50% {
-    opacity: 70%;
+    opacity: 50%;
   }
 
   100% {
     opacity: 100%;
   }
+
+}
+
+@keyframes one-minute-left-heaven {
+
+  0% {
+    opacity: 100%;
+  }
+
+  50% {
+    opacity: 75%;
+  }
+
+  100% {
+    opacity: 100%;
+  }
+
 }
 
 :root {
@@ -32,8 +49,12 @@
   line-height: 1;
 }
 
-.timer-display.one-minute-left {
-  animation: 2s infinite normal one-minute-left;
+.hell .timer-display.one-minute-left {
+  animation: 2s infinite normal one-minute-left-hell;
+}
+
+.heaven .timer-display.one-minute-left {
+  animation: 2s infinite normal one-minute-left-heaven;
 }
 
 .website-title {
