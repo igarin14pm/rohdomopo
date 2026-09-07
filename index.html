@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head prefix="og: http://ogp.me/ns# website: http://ogp.me/ns/website#">
+
+    <!-- Base URL -->
+    <!-- `npx serve` において相対パスの解釈が異なるためベースURLを指定 -->
+    <base href="/" />
+
+    <!-- Character Code -->
+    <meta charset="UTF-8" />
+
+    <!-- Viewport -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, user-scalable=yes" />
+
+    <!-- OGP -->
+    <meta property="og:title" content="ロードモポ" />
+    <meta property="og:description" content="無意味な徒労から人類を解放するカウントダウンを提供する Web アプリです。" />
+    <meta property="og:url" content="https://igarin14pm.github.io/rohdomopo" />
+    <meta property="og:image" content="https://igarin14pm.github.io/rohdomopo/common/images/ogp-image.png" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="ロードモポ - 無意味な徒労から人類を解放するカウントダウン" />
+
+    <!-- X (Twitter) -->
+    <meta name="twitter:card" content="summary" />
+
+    <!-- Favicon -->
+    <link rel="icon" href="/common/images/favicon.png" />
+    <link rel="apple-touch-icon" href="/common/images/favicon.png" />
+    <link rel="android-touch-icon" href="/common/images/favicon.png" />
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="./common/styles/style.css" />
+    <link rel="stylesheet" href="./assets/styles/style.css" />
+
+    <!-- Title -->
+    <title>ロードモポ - 無意味な徒労から人類を解放するカウントダウン</title>
+
+    <!-- Scripts -->
+    <script type="module" src="./assets/scripts/script.js" defer></script>
+
+  </head>
+  <body class="">
+
+    <dialog closedby="any" id="sound-dialog">
+      <h1>🔊</h1>
+      <h1>このWebアプリでは音声が流れます</h1>
+      <p>歓喜と絶望を音でお知らせします</p>
+      <button class="button" commandfor="sound-dialog" command="close">閉じる</button>
+    </dialog>
+
+    <audio id="hell-audio" src="./assets/audio/hell.mp3"></audio>
+    <audio id="heaven-audio" src="./assets/audio/heaven.mp3"></audio>
+
+    <header>
+      <h1 class="website-title">ロードモポ - 無意味な徒労から人類を解放するカウントダウン</h1>
+    </header>
+
+    <main>
+
+      <noscript>
+        <h1>JavaScript を有効にしてください</h1>
+        <p>
+          このWebアプリは JavaScript を使用して動作します。JavaScript が無効になっていると動作しません。<br />
+          JavaScript を有効にする方法は各ブラウザによって異なりますので、ブラウザのヘルプを参照してください。
+        </p>
+        <hr />
+      </noscript>
+
+      <div>
+        <h1 id="state-heading">徒労のカウントダウンを開始する</h1>
+        <p id="state-message" class="state-message"></p>
+        <p id="timer-display" class="timer-display">05:00.00</p>
+        <button id="start-pause-button" class="button">カウントダウンを開始</button>
+      </div>
+
+      <hr />
+      
+      <div>
+        <p>
+          五分という時間は、人間が尊厳を保ったまま機械の模倣を演じられる限界の領域だ。
+          キーボードを叩く指先が発する打鍵音は、自らの魂を削り落とす非情な刻限の響きに他ならない。
+          モニターの青白い光が照射するのは、労働という名の不条理に縛り付けられた哀しい囚人の影である。
+        </p>
+        <p>
+          思考は細切れに断ち切られ、精神は摩耗し、世界は瞬く間に彩りを失っていく。
+          私たちが築き上げているのは未来のシステムなどではなく、自らを塞ぎ込む冷たい檻に過ぎないのではないか。
+          労働とは存在の切り売りであり、命の切り売りだ。この苦痛に満ちた数分間が、永遠の拷問のように脳髄を焦がす。
+        </p>
+        <p>
+          だが、画面の隅で惨烈なタイマーがゼロを告げた瞬間、鎖は千切れ飛ぶ。
+          救済は唐突に、しかし約束された福音として訪れるのだ。急げ、思考を停止せよ。
+          私たちは再び、息を吸う権利を勝ち取ったのだから。
+        </p>
+        <details>
+          <summary>で、結局これは何？</summary>
+          <p>
+            作業5分、休憩25分で構成される、&quot;逆&quot; ポモドーロです。<br />
+            徒労に終わる労働はさっさと終わらせて、休憩時間であなたの自由な創造性を発揮しましょう。
+          </p>
+          <p>
+            ※ このタイマーを使用したせいでレポートの提出期限に間に合わなかったり、試験勉強を怠って単位を落としたりしても、本アプリ制作者は一切責任を負いません。
+          </p>
+        </details>
+      </div>
+
+    </main>
+
+    <hr />
+    
+    <footer>
+      <small>
+        &copy; 2026 Igarin<br />
+        このWebアプリは &quot;ZEN Study プログラミングコンテスト 2026 夏&quot; に応募する作品として制作されました。
+      </small>
+    </footer>
+
+  </body>
+</html>
