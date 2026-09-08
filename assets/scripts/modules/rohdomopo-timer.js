@@ -40,6 +40,14 @@ export class CountDownTimer {
   onCountingDown;
 
   /**
+   * 秒の位の値が減少した時に実行されるコールバック関数です
+   * 
+   * @function
+   * @type {() => void}
+   */
+  onCountingSeconds;
+
+  /**
    * タイマーのカウントダウンが終了したかどうか (残り0秒かどうか) を表します
    * 
    * @readonly
@@ -83,12 +91,14 @@ export class CountDownTimer {
    * `CountDownTimer` のインスタンスを生成します
    * 
    * @param {number} duration_ms タイマーの長さ (ミリ秒) 100分の1秒単位で演算が行われるため、1の位の値は無視されます
-   * @param {() => void} onCountingDown カウントダウン中に実行されるコールバック関数です
+   * @param {() => void} onCountingDown カウントダウン中に実行されるコールバック関数
+   * @param {() => void} onCountingSeconds 秒の位の値が減少した時に実行されるコールバック関数
    */
-  constructor(duration_ms, onCountingDown) {
+  constructor(duration_ms, onCountingDown, onCountingSeconds) {
     this.duration_cs = Math.floor(duration_ms / 10);
     this.currentTime_cs = this.duration_cs;
     this.onCountingDown = onCountingDown;
+    this.onCountingSeconds = onCountingSeconds;
   }
 
   /**
@@ -106,6 +116,9 @@ export class CountDownTimer {
     // 関数呼び出し時の日時と `this.currentTime_cs` を取得
     const dateOnStart = new Date();
     const currentTimeOnStart_cs = this.currentTime_cs;
+
+    // `this.onCountingSeconds()` の実行の制御に使用される、 `this.currentTime_cs` の一つ前の値
+    let previousTime_cs = this.currentTime_cs;
 
     // `this.isCountingDown` の値を更新
     this.#isCountingDown = true;
@@ -125,6 +138,12 @@ export class CountDownTimer {
         this.currentTime_cs = 0;
         this.pause();
       }
+
+      // `this.onCountingSeconds()` を実行
+      if (Math.floor(this.currentTime_cs / 100) < Math.floor(previousTime_cs / 100)) {
+        this.onCountingSeconds();
+      }
+      previousTime_cs = this.currentTime_cs;
 
       // `this.#isCountingDown` に `false` が代入されたらループを終了、タイマーを停止
       if (!this.#isCountingDown) {
@@ -305,16 +324,18 @@ export class RohdomopoTimer {
    * @param {number} hellDuration_ms "五分間の徒労" 状態用タイマーの長さ (ミリ秒) 100分の1秒単位で演算が行われるため、1の位の値は無視されます
    * @param {number} heavenDuration_ms "二十五分間の解放" 状態用のタイマーの長さ (ミリ秒) 100分の1秒単位で演算が行われるため、1の位の値は無視されます
    * @param {() => void} onCountingDown カウントダウン中に実行されるコールバック関数
-   * @param {(state: string) => void} onStateChanged 状態が変化した際に呼び出されるコールバック関数
+   * @param {() => void} onCountingSeconds 秒の位の値が減少した時に実行されるコールバック関数
+   * @param {(state: string) => void} onStateChanged 状態が変化した際に実行されるコールバック関数
    */
   constructor(
     hellDuration_ms,
     heavenDuration_ms,
     onCountingDown,
+    onCountingSeconds,
     onStateChanged
   ) {
-    this.hellTimer = new CountDownTimer(hellDuration_ms, onCountingDown);
-    this.heavenTimer = new CountDownTimer(heavenDuration_ms, onCountingDown);
+    this.hellTimer = new CountDownTimer(hellDuration_ms, onCountingDown, onCountingSeconds);
+    this.heavenTimer = new CountDownTimer(heavenDuration_ms, onCountingDown, onCountingSeconds);
     this.onStateChanged = onStateChanged;
   }
 
