@@ -17,18 +17,6 @@ const body = document.body;
 const soundDialogElement = document.querySelector('#sound-dialog');
 
 /**
- * hell.mp3 を再生する `<audio>` 要素
- * 
- * @type {HTMLAudioElement}
- */
-const hellAudioElement = document.querySelector('#hell-audio');
-
-/**
- * heaven.mp3 を再生する `<audio>` 要素
- */
-const heavenAudioElement = document.querySelector('#heaven-audio');
-
-/**
  * タイマーの状態を表示する `<h1>` 要素
  * 
  * @type {HTMLHeadingElement}
@@ -64,12 +52,12 @@ const startPauseButtonElement = document.querySelector('#start-pause-button');
 const rohdomopoApp = new RohdomopoApp(
   body,
   soundDialogElement,
-  hellAudioElement,
-  heavenAudioElement,
   stateHeadingElement,
   stateMessageElement,
   timerDisplayElement,
-  startPauseButtonElement
+  startPauseButtonElement,
+  15 * 1000,
+  15 * 10000
 );
 
 // DOM読み込み終了時に実行
