@@ -4,6 +4,7 @@ import { afterEach, beforeEach, expect, test } from './modules/test.js';
 import * as RohdomopoTimer from '../../../assets/scripts/modules/rohdomopo-timer.js';
 import * as App from '../../../assets/scripts/modules/app.js';
 import * as TimersPromises from '../../../common/scripts/timers-promises.js';
+import { AudioEngine } from '../../../assets/scripts/modules/audio-engine.js';
 
 /**
  * テストを実行する関数
@@ -25,7 +26,15 @@ async function startTests() {
    */
   const htmlContainer = document.createElement('div');
 
+  /**
+   * `AudioEngine` のインスタンス
+   * 
+   * @type {AudioEngine} audioEngine
+   */
+  let audioEngine;
+
   beforeEach(() => {
+
     htmlContainer.innerHTML = 
       '<dialog closedby="any" id="sound-dialog">' +
       '  <h1>🔊</h1>' +
@@ -41,17 +50,24 @@ async function startTests() {
       '    <button id="start-pause-button" class="button">カウントダウンを開始</button>' +
       '  </div>' +
       '</main>';
+
+    audioEngine = new AudioEngine(
+      './assets/audio/hell_test.mp3',
+      './assets/audio/heaven_test.mp3',
+      './assets/audio/count_test.mp3'
+    );
+    audioEngine.gain = 0.0;
+
   });
 
   afterEach(() => {
+
     const body = document.body;
     body.classList.remove('hell');
     body.classList.remove('heaven');
 
-    const hellAudio = document.querySelector('#hell-audio');
-    const heavenAudio = document.querySelector('#heaven-audio');
-    hellAudio.pause();
-    heavenAudio.pause();
+    audioEngine.close();
+
   });
 
   // -------- /assets/scripts/modules/app.js --------
@@ -61,8 +77,6 @@ async function startTests() {
   await test('`RohdomopoApp.constructor()`', () => {
     const body = document.body;
     const soundDialogElement = htmlContainer.querySelector('#sound-dialog');
-    const hellAudioElement = document.querySelector('#hell-audio');
-    const heavenAudioElement = document.querySelector('#heaven-audio');
     const stateHeadingElement = htmlContainer.querySelector('#state-heading');
     const stateMessageElement = htmlContainer.querySelector('#state-message');
     const timerDisplayElement = htmlContainer.querySelector('#timer-display');
@@ -71,12 +85,11 @@ async function startTests() {
     const rohdomopoApp = new App.RohdomopoApp(
       body,
       soundDialogElement,
-      hellAudioElement,
-      heavenAudioElement,
       stateHeadingElement,
       stateMessageElement,
       timerDisplayElement,
       startPauseButtonElement,
+      audioEngine,
       12 * 60 * 1000 + 34 * 1000 + 560,
       54 * 60 * 1000 + 32 * 1000 + 100
     );
@@ -86,6 +99,7 @@ async function startTests() {
     expect(rohdomopoApp.stateMessageElement).toBe(stateMessageElement);
     expect(rohdomopoApp.timerDisplayElement).toBe(timerDisplayElement);
     expect(rohdomopoApp.startPauseButtonElement).toBe(startPauseButtonElement);
+    expect(rohdomopoApp.audioEngine).toBe(audioEngine);
     expect(rohdomopoApp.rohdomopoTimer.hellTimer.duration_cs).toBe(12 * 60 * 100 + 34 * 100 + 56);
     expect(rohdomopoApp.rohdomopoTimer.heavenTimer.duration_cs).toBe(54 * 60 * 100 + 32 * 100 + 10);
   });
@@ -93,8 +107,6 @@ async function startTests() {
   await test('`RohdomopoApp.constructor()` - デフォルト値', () => {
     const body = document.body;
     const soundDialogElement = htmlContainer.querySelector('#sound-dialog');
-    const hellAudioElement = document.querySelector('#hell-audio');
-    const heavenAudioElement = document.querySelector('#heaven-audio');
     const stateHeadingElement = htmlContainer.querySelector('#state-heading');
     const stateMessageElement = htmlContainer.querySelector('#state-message');
     const timerDisplayElement = htmlContainer.querySelector('#timer-display');
@@ -103,12 +115,11 @@ async function startTests() {
     const rohdomopoApp = new App.RohdomopoApp(
       body,
       soundDialogElement,
-      hellAudioElement,
-      heavenAudioElement,
       stateHeadingElement,
       stateMessageElement,
       timerDisplayElement,
-      startPauseButtonElement
+      startPauseButtonElement,
+      audioEngine
     );
 
     expect(rohdomopoApp.rohdomopoTimer.hellTimer.duration_cs).toBe(5 * 60 * 100);
@@ -120,8 +131,6 @@ async function startTests() {
     () => {
       const body = document.body;
       const soundDialogElement = htmlContainer.querySelector('#sound-dialog');
-      const hellAudioElement = document.querySelector('#hell-audio');
-      const heavenAudioElement = document.querySelector('#heaven-audio');
       const stateHeadingElement = htmlContainer.querySelector('#state-heading');
       const stateMessageElement = htmlContainer.querySelector('#state-message');
       const timerDisplayElement = htmlContainer.querySelector('#timer-display');
@@ -129,12 +138,11 @@ async function startTests() {
       const rohdomopoApp = new App.RohdomopoApp(
         body,
         soundDialogElement,
-        hellAudioElement,
-        heavenAudioElement,
         stateHeadingElement,
         stateMessageElement,
         timerDisplayElement,
         startPauseButtonElement,
+        audioEngine,
         60 * 1000,
         25 * 60 * 1000
       );
@@ -151,8 +159,6 @@ async function startTests() {
     () => {
       const body = document.body;
       const soundDialogElement = htmlContainer.querySelector('#sound-dialog');
-      const hellAudioElement = document.querySelector('#hell-audio');
-      const heavenAudioElement = document.querySelector('#heaven-audio');
       const stateHeadingElement = htmlContainer.querySelector('#state-heading');
       const stateMessageElement = htmlContainer.querySelector('#state-message');
       const timerDisplayElement = htmlContainer.querySelector('#timer-display');
@@ -160,12 +166,11 @@ async function startTests() {
       const rohdomopoApp = new App.RohdomopoApp(
         body,
         soundDialogElement,
-        hellAudioElement,
-        heavenAudioElement,
         stateHeadingElement,
         stateMessageElement,
         timerDisplayElement,
         startPauseButtonElement,
+        audioEngine,
         59 * 1000 + 990,
         25 * 60 * 1000
       );
@@ -182,8 +187,6 @@ async function startTests() {
     async () => {
       const body = document.body;
       const soundDialogElement = htmlContainer.querySelector('#sound-dialog');
-      const hellAudioElement = document.querySelector('#hell-audio');
-      const heavenAudioElement = document.querySelector('#heaven-audio');
       const stateHeadingElement = htmlContainer.querySelector('#state-heading');
       const stateMessageElement = htmlContainer.querySelector('#state-message');
       const timerDisplayElement = htmlContainer.querySelector('#timer-display');
@@ -191,12 +194,11 @@ async function startTests() {
       const rohdomopoApp = new App.RohdomopoApp(
         body,
         soundDialogElement,
-        hellAudioElement,
-        heavenAudioElement,
         stateHeadingElement,
         stateMessageElement,
         timerDisplayElement,
         startPauseButtonElement,
+        audioEngine,
         50,
         25 * 60 * 1000
       );
@@ -216,8 +218,6 @@ async function startTests() {
     async () => {
       const body = document.body;
       const soundDialogElement = htmlContainer.querySelector('#sound-dialog');
-      const hellAudioElement = document.querySelector('#hell-audio');
-      const heavenAudioElement = document.querySelector('#heaven-audio');
       const stateHeadingElement = htmlContainer.querySelector('#state-heading');
       const stateMessageElement = htmlContainer.querySelector('#state-message');
       const timerDisplayElement = htmlContainer.querySelector('#timer-display');
@@ -225,12 +225,11 @@ async function startTests() {
       const rohdomopoApp = new App.RohdomopoApp(
         body,
         soundDialogElement,
-        hellAudioElement,
-        heavenAudioElement,
         stateHeadingElement,
         stateMessageElement,
         timerDisplayElement,
         startPauseButtonElement,
+        audioEngine,
         5 * 60 * 1000,
         50
       );
@@ -248,8 +247,6 @@ async function startTests() {
   await test('`RohdomopoApp.onStateChanged()` - \"五分間の徒労\" 状態に変化時に `<body>` の class が `hell` になる', () => {
     const body = document.body;
     const soundDialogElement = htmlContainer.querySelector('#sound-dialog');
-    const hellAudioElement = document.querySelector('#hell-audio');
-    const heavenAudioElement = document.querySelector('#heaven-audio');
     const stateHeadingElement = htmlContainer.querySelector('#state-heading');
     const stateMessageElement = htmlContainer.querySelector('#state-message');
     const timerDisplayElement = htmlContainer.querySelector('#timer-display');
@@ -257,12 +254,11 @@ async function startTests() {
     const rohdomopoApp = new App.RohdomopoApp(
       body,
       soundDialogElement,
-      hellAudioElement,
-      heavenAudioElement,
       stateHeadingElement,
       stateMessageElement,
       timerDisplayElement,
-      startPauseButtonElement
+      startPauseButtonElement,
+      audioEngine
     );
 
     rohdomopoApp.onStateChanged('hell');
@@ -271,37 +267,9 @@ async function startTests() {
     expect(body.classList.contains('heaven')).toBe(false);
   });
 
-  await test('`RohdomopoApp.onStateChanged()` - \"五分間の徒労\" 状態に変化時に hell.mp3 が再生される', async () => {
-    const body = document.body;
-    const soundDialogElement = htmlContainer.querySelector('#sound-dialog');
-    const hellAudioElement = document.querySelector('#hell-audio');
-    const heavenAudioElement = document.querySelector('#heaven-audio');
-    const stateHeadingElement = htmlContainer.querySelector('#state-heading');
-    const stateMessageElement = htmlContainer.querySelector('#state-message');
-    const timerDisplayElement = htmlContainer.querySelector('#timer-display');
-    const startPauseButtonElement = htmlContainer.querySelector('#start-pause-button');
-    const rohdomopoApp = new App.RohdomopoApp(
-      body,
-      soundDialogElement,
-      hellAudioElement,
-      heavenAudioElement,
-      stateHeadingElement,
-      stateMessageElement,
-      timerDisplayElement,
-      startPauseButtonElement
-    );
-
-    await rohdomopoApp.onStateChanged('hell');
-
-    const isHellAudioPlaying = !hellAudioElement.paused && !hellAudioElement.ended;
-    expect(isHellAudioPlaying).toBe(true);
-  });
-
   await test('`RohdomopoApp.onStateChanged()` - \"五分間の徒労\" 状態に変化時にテキストが変化する', () => {
     const body = document.body;
     const soundDialogElement = htmlContainer.querySelector('#sound-dialog');
-    const hellAudioElement = document.querySelector('#hell-audio');
-    const heavenAudioElement = document.querySelector('#heaven-audio');
     const stateHeadingElement = htmlContainer.querySelector('#state-heading');
     const stateMessageElement = htmlContainer.querySelector('#state-message');
     const timerDisplayElement = htmlContainer.querySelector('#timer-display');
@@ -309,12 +277,11 @@ async function startTests() {
     const rohdomopoApp = new App.RohdomopoApp(
       body,
       soundDialogElement,
-      hellAudioElement,
-      heavenAudioElement,
       stateHeadingElement,
       stateMessageElement,
       timerDisplayElement,
-      startPauseButtonElement
+      startPauseButtonElement,
+      audioEngine
     );
 
     rohdomopoApp.onStateChanged('hell');
@@ -326,8 +293,6 @@ async function startTests() {
   await test('`RohdomopoApp.onStateChanged()` - \"二十五分間の解放\" 状態に変化時に `<body>` の class が `heaven` になる', () => {
     const body = document.body;
     const soundDialogElement = htmlContainer.querySelector('#sound-dialog');
-    const hellAudioElement = document.querySelector('#hell-audio');
-    const heavenAudioElement = document.querySelector('#heaven-audio');
     const stateHeadingElement = htmlContainer.querySelector('#state-heading');
     const stateMessageElement = htmlContainer.querySelector('#state-message');
     const timerDisplayElement = htmlContainer.querySelector('#timer-display');
@@ -335,12 +300,11 @@ async function startTests() {
     const rohdomopoApp = new App.RohdomopoApp(
       body,
       soundDialogElement,
-      hellAudioElement,
-      heavenAudioElement,
       stateHeadingElement,
       stateMessageElement,
       timerDisplayElement,
-      startPauseButtonElement
+      startPauseButtonElement,
+      audioEngine
     );
 
     rohdomopoApp.onStateChanged('heaven');
@@ -349,37 +313,9 @@ async function startTests() {
     expect(body.classList.contains('heaven')).toBe(true);
   });
 
-  await test('`RohdomopoApp.onStateChanged()` - \"二十五分間の解放\" 状態に変化時に heaven.mp3 が再生される', () => {
-    const body = document.body;
-    const soundDialogElement = htmlContainer.querySelector('#sound-dialog');
-    const hellAudioElement = document.querySelector('#hell-audio');
-    const heavenAudioElement = document.querySelector('#heaven-audio');
-    const stateHeadingElement = htmlContainer.querySelector('#state-heading');
-    const stateMessageElement = htmlContainer.querySelector('#state-message');
-    const timerDisplayElement = htmlContainer.querySelector('#timer-display');
-    const startPauseButtonElement = htmlContainer.querySelector('#start-pause-button');
-    const rohdomopoApp = new App.RohdomopoApp(
-      body,
-      soundDialogElement,
-      hellAudioElement,
-      heavenAudioElement,
-      stateHeadingElement,
-      stateMessageElement,
-      timerDisplayElement,
-      startPauseButtonElement
-    );
-
-    rohdomopoApp.onStateChanged('heaven');
-
-    const isHeavenAudioPlaying = !heavenAudioElement.paused && !heavenAudioElement.ended;
-    expect(isHeavenAudioPlaying).toBe(true);
-  });
-
   await test('`RohdomopoApp.onStateChanged()` - \"二十五分間の解放\" 状態に変化時にテキストが変化する', async () => {
     const body = document.body;
     const soundDialogElement = htmlContainer.querySelector('#sound-dialog');
-    const hellAudioElement = document.querySelector('#hell-audio');
-    const heavenAudioElement = document.querySelector('#heaven-audio');
     const stateHeadingElement = htmlContainer.querySelector('#state-heading');
     const stateMessageElement = htmlContainer.querySelector('#state-message');
     const timerDisplayElement = htmlContainer.querySelector('#timer-display');
@@ -387,12 +323,11 @@ async function startTests() {
     const rohdomopoApp = new App.RohdomopoApp(
       body,
       soundDialogElement,
-      hellAudioElement,
-      heavenAudioElement,
       stateHeadingElement,
       stateMessageElement,
       timerDisplayElement,
-      startPauseButtonElement
+      startPauseButtonElement,
+      audioEngine
     );
 
     rohdomopoApp.onStateChanged('heaven');
@@ -404,8 +339,6 @@ async function startTests() {
   await test('`RohdomopoApp.requestUpdatingTimerDisplay()` - `requestAnimationId` に値が代入される', () => {
     const body = document.body;
     const soundDialogElement = htmlContainer.querySelector('#sound-dialog');
-    const hellAudioElement = document.querySelector('#hell-audio');
-    const heavenAudioElement = document.querySelector('#heaven-audio');
     const stateHeadingElement = htmlContainer.querySelector('#state-heading');
     const stateMessageElement = htmlContainer.querySelector('#state-message');
     const timerDisplayElement = htmlContainer.querySelector('#timer-display');
@@ -413,12 +346,11 @@ async function startTests() {
     const rohdomopoApp = new App.RohdomopoApp(
       body,
       soundDialogElement,
-      hellAudioElement,
-      heavenAudioElement,
       stateHeadingElement,
       stateMessageElement,
       timerDisplayElement,
-      startPauseButtonElement
+      startPauseButtonElement,
+      audioEngine
     );
 
     const requestAnimationId1 = rohdomopoApp.requestAnimationId;
@@ -433,8 +365,6 @@ async function startTests() {
   await test('`RohdomopoApp.cancelUpdatingTimerDisplay()` - `requestAnimationId` に `null` が代入される', () => {
     const body = document.body;
     const soundDialogElement = htmlContainer.querySelector('#sound-dialog');
-    const hellAudioElement = document.querySelector('#hell-audio');
-    const heavenAudioElement = document.querySelector('#heaven-audio');
     const stateHeadingElement = htmlContainer.querySelector('#state-heading');
     const stateMessageElement = htmlContainer.querySelector('#state-message');
     const timerDisplayElement = htmlContainer.querySelector('#timer-display');
@@ -442,12 +372,11 @@ async function startTests() {
     const rohdomopoApp = new App.RohdomopoApp(
       body,
       soundDialogElement,
-      hellAudioElement,
-      heavenAudioElement,
       stateHeadingElement,
       stateMessageElement,
       timerDisplayElement,
-      startPauseButtonElement
+      startPauseButtonElement,
+      audioEngine
     );
 
     rohdomopoApp.requestUpdatingTimerDisplay();
@@ -459,8 +388,6 @@ async function startTests() {
   await test('`RohdomopoApp.onClickStartPauseButton()` - タイマー開始時', async () => {
     const body = document.body;
     const soundDialogElement = htmlContainer.querySelector('#sound-dialog');
-    const hellAudioElement = document.querySelector('#hell-audio');
-    const heavenAudioElement = document.querySelector('#heaven-audio');
     const stateHeadingElement = htmlContainer.querySelector('#state-heading');
     const stateMessageElement = htmlContainer.querySelector('#state-message');
     const timerDisplayElement = htmlContainer.querySelector('#timer-display');
@@ -468,12 +395,11 @@ async function startTests() {
     const rohdomopoApp = new App.RohdomopoApp(
       body,
       soundDialogElement,
-      hellAudioElement,
-      heavenAudioElement,
       stateHeadingElement,
       stateMessageElement,
       timerDisplayElement,
-      startPauseButtonElement
+      startPauseButtonElement,
+      audioEngine
     );
 
     rohdomopoApp.onClickStartPauseButton();
@@ -489,8 +415,6 @@ async function startTests() {
   await test('`RohdomopoApp.onClickStartPauseButton()` - タイマー一時停止時', async () => {
     const body = document.body;
     const soundDialogElement = htmlContainer.querySelector('#sound-dialog');
-    const hellAudioElement = document.querySelector('#hell-audio');
-    const heavenAudioElement = document.querySelector('#heaven-audio');
     const stateHeadingElement = htmlContainer.querySelector('#state-heading');
     const stateMessageElement = htmlContainer.querySelector('#state-message');
     const timerDisplayElement = htmlContainer.querySelector('#timer-display');
@@ -498,12 +422,11 @@ async function startTests() {
     const rohdomopoApp = new App.RohdomopoApp(
       body,
       soundDialogElement,
-      hellAudioElement,
-      heavenAudioElement,
       stateHeadingElement,
       stateMessageElement,
       timerDisplayElement,
-      startPauseButtonElement
+      startPauseButtonElement,
+      audioEngine
     );
 
     rohdomopoApp.onClickStartPauseButton();
@@ -523,20 +446,26 @@ async function startTests() {
       console.log('`onCountingDown()` called'); 
     };
     const onCountingDown2 = () => { };
-    const countDownTimer1 = new RohdomopoTimer.CountDownTimer(30000, onCountingDown1);
-    const countDownTimer2 = new RohdomopoTimer.CountDownTimer(12 * 60 * 1000 + 34 * 1000 + 560, onCountingDown2);
+    const onCountingSeconds1 = () => {
+      console.log('`onCountingSeconds()` called');
+    };
+    const onCountingSeconds2 = () => { };
+    const countDownTimer1 = new RohdomopoTimer.CountDownTimer(30000, onCountingDown1, onCountingSeconds1);
+    const countDownTimer2 = new RohdomopoTimer.CountDownTimer(12 * 60 * 1000 + 34 * 1000 + 560, onCountingDown2, onCountingSeconds2);
 
     expect(countDownTimer1.duration_cs).toBe(3000);
     expect(countDownTimer1.currentTime_cs).toBe(3000);
     expect(countDownTimer1.onCountingDown).toBe(onCountingDown1);
+    expect(countDownTimer1.onCountingSeconds).toBe(onCountingSeconds1)
     expect(countDownTimer2.duration_cs).toBe(12 * 60 * 100 + 34 * 100 + 56);
     expect(countDownTimer2.currentTime_cs).toBe(12 * 60 * 100 + 34 * 100 + 56);
     expect(countDownTimer2.onCountingDown).toBe(onCountingDown2);
+    expect(countDownTimer2.onCountingSeconds).toBe(onCountingSeconds2);
   });
 
   await test('`CountDonwTimer.isFinished`', async () => {
-    const countDownTimer1 = new RohdomopoTimer.CountDownTimer(100, () => { });
-    const countDownTimer2 = new RohdomopoTimer.CountDownTimer(200, () => { });
+    const countDownTimer1 = new RohdomopoTimer.CountDownTimer(100, () => { }, () => { });
+    const countDownTimer2 = new RohdomopoTimer.CountDownTimer(200, () => { }, () => { });
 
     const isFinished1_1 = countDownTimer1.isFinished;
     const isFinished2_1 = countDownTimer2.isFinished;
@@ -558,8 +487,8 @@ async function startTests() {
   })
 
   await test('`CountDownTimer.textContent`', () => {
-    const countDownTimer1 = new RohdomopoTimer.CountDownTimer(30000, () => { });
-    const countDownTimer2 = new RohdomopoTimer.CountDownTimer(12 * 60 * 1000 + 34 * 1000 + 560, () => { });
+    const countDownTimer1 = new RohdomopoTimer.CountDownTimer(30000, () => { }, () => { });
+    const countDownTimer2 = new RohdomopoTimer.CountDownTimer(12 * 60 * 1000 + 34 * 1000 + 560, () => { }, () => { });
 
     expect(countDownTimer1.textContent).toBe('00:30.00');
     expect(countDownTimer2.textContent).toBe('12:34.56');
@@ -567,9 +496,13 @@ async function startTests() {
 
   await test('`CountDownTimer.start()` - `CountDownTimer.onCountingDown()` が呼び出される', async () => {
     let isOnCountingDownCalled = false;
-    const countDownTimer = new RohdomopoTimer.CountDownTimer(30000, () => {
-      isOnCountingDownCalled = true;
-    });
+    const countDownTimer = new RohdomopoTimer.CountDownTimer(
+      30000, 
+      () => {
+        isOnCountingDownCalled = true;
+      },
+      () => { }
+    );
 
     countDownTimer.start();
     await TimersPromises.setTimeout(100);
@@ -579,8 +512,8 @@ async function startTests() {
   });
 
   await test('`CountDonwTimer.start()` - `CountDownTimer.currentTime_cs` が減少する', async () => {
-    const countDownTimer1 = new RohdomopoTimer.CountDownTimer(30000, () => { });
-    const countDownTimer2 = new RohdomopoTimer.CountDownTimer(12 * 60 * 1000 + 34 * 1000 + 560, () => { });
+    const countDownTimer1 = new RohdomopoTimer.CountDownTimer(30000, () => { }, () => { });
+    const countDownTimer2 = new RohdomopoTimer.CountDownTimer(12 * 60 * 1000 + 34 * 1000 + 560, () => { }, () => { });
 
     countDownTimer1.start();
     await TimersPromises.setTimeout(100);
@@ -595,8 +528,8 @@ async function startTests() {
   });
 
   await test('`CountDownTimer.start()` - `CountDownTimer.currenTime_cs` が `0` で停止する', async () => {
-    const countDownTimer1 = new RohdomopoTimer.CountDownTimer(100, () => { });
-    const countDownTimer2 = new RohdomopoTimer.CountDownTimer(200, () => { });
+    const countDownTimer1 = new RohdomopoTimer.CountDownTimer(100, () => { }, () => { });
+    const countDownTimer2 = new RohdomopoTimer.CountDownTimer(200, () => { }, () => { });
 
     countDownTimer1.start();
     countDownTimer2.start();
@@ -606,9 +539,60 @@ async function startTests() {
     expect(countDownTimer2.currentTime_cs).toBe(0);
   });
 
+  await test('`CountDownTimer.start()` - 秒の位が減少したときに `CountDownTimer.onCountSeconds()` が実行される', async () => {
+    let isOnCountingSecondsCalled = false;
+    const countDownTimer = new RohdomopoTimer.CountDownTimer(
+      1050,
+      () => { },
+      () => {
+        isOnCountingSecondsCalled = true;
+      }
+    );
+
+    countDownTimer.start();
+    await TimersPromises.setTimeout(100);
+    countDownTimer.pause();
+
+    expect(isOnCountingSecondsCalled).toBe(true);
+  });
+
+  await test('`CountDownTimer.start()` - 秒の位が減少しなかったときに `CountDonwTimer.onCountSeconds()` が実行されない', async () => {
+    let isOnCountingSecondsCalled = false;
+    const countDownTimer = new RohdomopoTimer.CountDownTimer(
+      1999,
+      () => { },
+      () => {
+        isOnCountingSecondsCalled = true;
+      }
+    );
+
+    countDownTimer.start();
+    await TimersPromises.setTimeout(980);
+    countDownTimer.pause();
+
+    expect(isOnCountingSecondsCalled).toBe(false);
+  });
+
+  await test('`CountDownTimer.start()` - 残り0秒になったときに `CountDonwTimer.onCountSeconds()` が実行されない', async () => {
+    let isOnCountingSecondsCalled = false;
+    const countDownTimer = new RohdomopoTimer.CountDownTimer(
+      50,
+      () => { },
+      () => {
+        isOnCountingSecondsCalled = true;
+      }
+    );
+
+    countDownTimer.start();
+    await TimersPromises.setTimeout(100);
+    countDownTimer.pause();
+
+    expect(isOnCountingSecondsCalled).toBe(false);
+  });
+
   await test('`CountDownTimer.pause()`', async () => {
-    const countDownTimer1 = new RohdomopoTimer.CountDownTimer(30000, () => { });
-    const countDownTimer2 = new RohdomopoTimer.CountDownTimer(12 * 60 * 1000 + 34 * 1000 + 560, () => { });
+    const countDownTimer1 = new RohdomopoTimer.CountDownTimer(30000, () => { }, () => { });
+    const countDownTimer2 = new RohdomopoTimer.CountDownTimer(12 * 60 * 1000 + 34 * 1000 + 560, () => { }, () => { });
 
     countDownTimer1.start();
     countDownTimer2.start();
@@ -627,8 +611,8 @@ async function startTests() {
   });
 
   await test('`CountDownTimer.reset()`', async () => {
-    const countDownTimer1 = new RohdomopoTimer.CountDownTimer(30000, () => { });
-    const countDownTimer2 = new RohdomopoTimer.CountDownTimer(12 * 60 * 1000 + 34 * 1000 + 560, () => { });
+    const countDownTimer1 = new RohdomopoTimer.CountDownTimer(30000, () => { }, () => { });
+    const countDownTimer2 = new RohdomopoTimer.CountDownTimer(12 * 60 * 1000 + 34 * 1000 + 560, () => { }, () => { });
     countDownTimer1.start();
     countDownTimer2.start();
     await TimersPromises.setTimeout(100);
@@ -652,24 +636,34 @@ async function startTests() {
     const onCountingDown = () => {
       console.log('`onCountingDown()` called');
     };
+    const onCountingSeconds = () => {
+      console.log('`onCountingSeconds()` called');
+    };
     const onStateChanged = (state) => { 
       console.log(`state changed to ${state}`); 
     };
       
     const rohdomopoTimer = new RohdomopoTimer.RohdomopoTimer(
-      5 * 60 * 1000, 25 * 60 * 1000, 
-      onCountingDown, 
+      5 * 60 * 1000, 
+      25 * 60 * 1000, 
+      onCountingDown,
+      onCountingSeconds, 
       onStateChanged
     );
 
     expect(rohdomopoTimer.hellTimer.duration_cs).toBe(5 * 60 * 100);
     expect(rohdomopoTimer.heavenTimer.duration_cs).toBe(25 * 60 * 100);
+    expect(rohdomopoTimer.hellTimer.onCountingDown).toBe(onCountingDown);
+    expect(rohdomopoTimer.heavenTimer.onCountingDown).toBe(onCountingDown);
+    expect(rohdomopoTimer.hellTimer.onCountingSeconds).toBe(onCountingSeconds);
+    expect(rohdomopoTimer.heavenTimer.onCountingSeconds).toBe(onCountingSeconds);
     expect(rohdomopoTimer.onStateChanged).toBe(onStateChanged);
   });
 
   await test('`RohdomopoTimer.isCountingDown`', async () => {
     const rohdomopoTimer = new RohdomopoTimer.RohdomopoTimer(
       5 * 60 * 1000, 25 * 60 * 1000, 
+      () => { },
       () => { },
       () => { }
     );
@@ -688,7 +682,7 @@ async function startTests() {
   });
 
   await test('`RohdomopoTimer.state` - getter', async () => {
-    const rohdomopoTimer = new RohdomopoTimer.RohdomopoTimer(200, 200, () => { }, () => { });
+    const rohdomopoTimer = new RohdomopoTimer.RohdomopoTimer(200, 200, () => { }, () => { }, () => { });
 
     const state1 = rohdomopoTimer.state;
     rohdomopoTimer.start();
@@ -713,6 +707,7 @@ async function startTests() {
       5 * 60 * 1000, 
       25 * 60 * 1000, 
       () => { },
+      () => { },
       () => {
         isOnStateChangedCallbackCalled1 = true;
       }
@@ -720,6 +715,7 @@ async function startTests() {
     const rohdomopoTimer2 = new RohdomopoTimer.RohdomopoTimer(
       5 * 60 * 1000, 
       25 * 60 * 1000, 
+      () => { },
       () => { },
       () => {
         isOnStateChangedCallbackCalled2 = true;
@@ -740,6 +736,7 @@ async function startTests() {
       5 * 60 * 1000, 
       25 * 60 * 1000, 
       () => { },
+      () => { },
       () => { }
     );
     rohdomopoTimer1.state = 'hell';
@@ -753,6 +750,7 @@ async function startTests() {
     const rohdomopoTimer1 = new RohdomopoTimer.RohdomopoTimer(
       5 * 60 * 1000, 
       25 * 60 * 1000, 
+      () => { },
       () => { },
       () => { }
     );
@@ -768,11 +766,13 @@ async function startTests() {
       5 * 60 * 1000, 
       25 * 60 * 1000, 
       () => { },
+      () => { },
       () => { }
     );
     const rohdomopoTimer2 = new RohdomopoTimer.RohdomopoTimer(
       12 * 60 * 1000 + 34 * 1000 + 560,
       54 * 60 * 1000 + 32 * 1000 + 100,
+      () => { },
       () => { },
       () => { }
     );
@@ -800,6 +800,7 @@ async function startTests() {
     const rohdomopoTimer = new RohdomopoTimer.RohdomopoTimer(
       5 * 60 * 1000, 25 * 60 * 1000, 
       () => { },
+      () => { },
       () => { }
     );
 
@@ -816,10 +817,12 @@ async function startTests() {
     const rohdomopoTimer1 = new RohdomopoTimer.RohdomopoTimer(
       5 * 60 * 1000, 25 * 60 * 1000, 
       () => { },
+      () => { },
       () => { }
     );
     const rohdomopoTimer2 = new RohdomopoTimer.RohdomopoTimer(
       5 * 60 * 1000, 25 * 60 * 1000, 
+      () => { },
       () => { },
       () => { }
     );
@@ -842,11 +845,13 @@ async function startTests() {
     const rohdomopoTimer1 = new RohdomopoTimer.RohdomopoTimer(
       100, 25 * 60 * 1000, 
       () => { },
+      () => { },
       () => { }
     );
     const rohdomopoTimer2 = new RohdomopoTimer.RohdomopoTimer(
       5 * 60 * 1000, 100, 
       () => { }, 
+      () => { },
       () => { }
     );
     rohdomopoTimer1.state = 'hell';
@@ -873,10 +878,12 @@ async function startTests() {
     const rohdomopoTimer1 = new RohdomopoTimer.RohdomopoTimer(
       100, 25 * 60 * 1000, 
       () => { }, 
+      () => { },
       () => { }
     );
     const rohdomopoTimer2 = new RohdomopoTimer.RohdomopoTimer(
       5 * 60 * 1000, 100, 
+      () => { },
       () => { },
       () => { }
     );
@@ -899,10 +906,12 @@ async function startTests() {
     const rohdomopoTimer1 = new RohdomopoTimer.RohdomopoTimer(
       5 * 60 * 1000, 25 * 60 * 1000, 
       () => { },
+      () => { },
       () => { }
     );
     const rohdomopoTimer2 = new RohdomopoTimer.RohdomopoTimer(
       5 * 60 * 1000, 25 * 60 * 1000, 
+      () => { },
       () => { },
       () => { }
     );

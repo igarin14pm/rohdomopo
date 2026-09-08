@@ -1,5 +1,6 @@
 'use strict';
 
+import { AudioEngine } from './audio-engine.js';
 import { RohdomopoTimer, RohdomopoTimerState } from './rohdomopo-timer.js';
 
 /**
@@ -20,20 +21,6 @@ export class RohdomopoApp {
    * @type {HTMLDialogElement}
    */
   soundDialogElement;
-
-  /**
-   * DOMで取得した hell.mp3 を再生する `<audio>` 要素
-   * 
-   * @type {HTMLAudioElement}
-   */
-  hellAudioElement;
-
-  /**
-   * DOMで取得した heaven.mp3 を再生する `<audio>` 要素
-   * 
-   * @type {HTMLAudioElement}
-   */
-  heavenAudioElement;
 
   /**
    * DOMで取得したタイマーの状態を表示する `<h1>` 要素
@@ -64,6 +51,13 @@ export class RohdomopoApp {
   startPauseButtonElement;
 
   /**
+   * 音声を再生する `AudioEngine` のインスタンス
+   * 
+   * @type {AudioEngine}
+   */
+  audioEngine;
+
+  /**
    * アプリで使用する `RohdomopoTimer` のインスタンス
    * 
    * @type {RohdomopoTimer}
@@ -82,40 +76,39 @@ export class RohdomopoApp {
    * 
    * @param {HTMLBodyElement} body DOMで取得した HTML の `<body>`
    * @param {HTMLDialogElement} soundDialogElement DOMで取得した "このWebアプリでは音声が流れます" と表示する `<dialog>` 要素
-   * @param {HTMLAudioElement} hellAudioElement DOMで取得した hell.mp3 を再生する `<audio>` 要素
-   * @param {HTMLAudioElement} heavenAudioElement DOMで取得した heaven.mp3 を再生する `<audio>` 要素
    * @param {HTMLHeadingElement} stateHeadingElement DOMで取得したタイマーの状態を表示する `<h1>` 要素
    * @param {HTMLParagraphElement} stateMessageElement DOMで取得した文学的な指示文を表示する `<p>` 要素
    * @param {HTMLParagraphElement} timerDisplayElement DOMで取得したタイマーの残り時間を表示する `<p>` 要素
    * @param {HTMLButtonElement} startPauseButtonElement DOMで取得したカウントダウンを開始・停止する `<button>` 要素
+   * @param {AudioEngine} audioEngine 音声を再生する `AudioEngine` のインスタンス
    * @param {number} hellTimerDuration_ms "五分間の徒労" 状態タイマーの時間 (ミリ秒)
    * @param {number} heavenTimerDuration_ms "二十五分間の解放" 状態タイマーの時間 (ミリ秒)
    */
   constructor(
     body,
     soundDialogElement,
-    hellAudioElement,
-    heavenAudioElement,
     stateHeadingElement,
     stateMessageElement,
     timerDisplayElement,
     startPauseButtonElement,
+    audioEngine,
     hellTimerDuration_ms = 5 * 60 * 1000,
     heavenTimerDuration_ms = 25 * 60 * 1000
   ) {
     this.body = body;
     this.soundDialogElement = soundDialogElement;
-    this.hellAudioElement = hellAudioElement;
-    this.heavenAudioElement = heavenAudioElement;
     this.stateHeadingElement = stateHeadingElement;
     this.stateMessageElement = stateMessageElement;
     this.timerDisplayElement = timerDisplayElement;
     this.startPauseButtonElement = startPauseButtonElement;
 
+    this.audioEngine = audioEngine;
+
     this.rohdomopoTimer = new RohdomopoTimer(
       hellTimerDuration_ms,
       heavenTimerDuration_ms,
       this.onCountingDown,
+      this.onCountingSeconds,
       this.onStateChanged
     );
   }
@@ -123,6 +116,7 @@ export class RohdomopoApp {
   /**
    * カウントダウン中に実行されるコールバック関数です
    * 
+   * @function
    * @type {() => void}
    */
   onCountingDown = () => {
@@ -133,6 +127,16 @@ export class RohdomopoApp {
     } else if (currentTime_cs > 60 * 100 && this.timerDisplayElement.classList.contains(oneMinuteLeftClassName)) {
       this.timerDisplayElement.classList.remove(oneMinuteLeftClassName);
     }
+  }
+
+  /**
+   * タイマーの秒の位の値が減少した時に実行されるコールバック関数です
+   * 
+   * @function
+   * @type {() => void}
+   */
+  onCountingSeconds = () => {
+    this.audioEngine.playCountAudio();
   }
 
   /**
@@ -153,11 +157,7 @@ export class RohdomopoApp {
       this.stateMessageElement.textContent = '問うな。理由を求める時間は終わった。ただキーボードを叩け。';
 
       // hell.mp3 を再生
-      try {
-        this.hellAudioElement.play();
-      } catch(error) {
-        console.error(`\"hell.mp3\" の再生に失敗しました\n${error.message}`);
-      }
+      this.audioEngine.playHellAudio();
 
     } else if (state === RohdomopoTimerState.HEAVEN) { // "二十五分間の解放" 状態に変化時
 
@@ -170,11 +170,7 @@ export class RohdomopoApp {
       this.stateMessageElement.textContent = '見上げよ。世界は彩りに満ちている。思考の翼を広げ、どこへでも飛んでゆけ。';
 
       // heaven.mp3 を再生
-      try {
-        this.heavenAudioElement.play();
-      } catch(error) {
-        console.error(`\"heaven.mp3\" の再生に失敗しました\n${error.message}`);
-      }
+      this.audioEngine.playHeavenAudio();
 
     }
   }
