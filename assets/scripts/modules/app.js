@@ -57,7 +57,8 @@ export class RohdomopoApp {
    */
   audioEngine = new AudioEngine(
     './assets/audio/hell.mp3',
-    './assets/audio/heaven.mp3'
+    './assets/audio/heaven.mp3',
+    './assets/audio/count.mp3'
   );
 
   /**
@@ -107,6 +108,7 @@ export class RohdomopoApp {
       hellTimerDuration_ms,
       heavenTimerDuration_ms,
       this.onCountingDown,
+      this.onCountingSeconds,
       this.onStateChanged
     );
   }
@@ -114,6 +116,7 @@ export class RohdomopoApp {
   /**
    * カウントダウン中に実行されるコールバック関数です
    * 
+   * @function
    * @type {() => void}
    */
   onCountingDown = () => {
@@ -124,6 +127,16 @@ export class RohdomopoApp {
     } else if (currentTime_cs > 60 * 100 && this.timerDisplayElement.classList.contains(oneMinuteLeftClassName)) {
       this.timerDisplayElement.classList.remove(oneMinuteLeftClassName);
     }
+  }
+
+  /**
+   * タイマーの秒の位の値が減少した時に実行されるコールバック関数です
+   * 
+   * @function
+   * @type {() => void}
+   */
+  onCountingSeconds = () => {
+    this.audioEngine.playCountAudio();
   }
 
   /**

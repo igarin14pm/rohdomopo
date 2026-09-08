@@ -25,14 +25,23 @@ export class AudioEngine {
   heavenAudioBuffer;
 
   /**
+   * `AudioContext.decodeAudioData()` で取得した、 count.mp3 の `AudioBuffer` のインスタンス
+   * 
+   * @type {AudioBuffer}
+   */
+  countAudioBuffer;
+
+  /**
    * `AudioEngine` のインスタンスを生成します
    * 
    * @param {string} hellAudioPath hell.mp3 の HTML からの相対パス
    * @param {string} heavenAudioPath heaven.mp3 の HTML からの相対パス
+   * @param {string} countAudioPath count.mp3 の HTML からの相対パス
    */
   constructor(
     hellAudioPath,
-    heavenAudioPath
+    heavenAudioPath,
+    countAudioPath
   ) {
 
     const AudioContext = window.AudioContext || window.webkitAudioContext;
@@ -62,6 +71,12 @@ export class AudioEngine {
         this.heavenAudioBuffer = audioBuffer;
       }
     );
+    load(
+      countAudioPath,
+      (audioBuffer) => {
+        this.countAudioBuffer = audioBuffer;
+      }
+    )
 
   }
 
@@ -98,6 +113,13 @@ export class AudioEngine {
    */
   playHeavenAudio() {
     this.#playAudio(this.heavenAudioBuffer);
+  }
+
+  /**
+   * count.mp3 を再生します
+   */
+  playCountAudio() {
+    this.#playAudio(this.countAudioBuffer);
   }
 
 }
