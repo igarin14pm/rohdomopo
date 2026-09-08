@@ -1,31 +1,34 @@
 /**
- * @returns {AudioContext}
+ * 音声を再生するクラス
  */
-export function getAudioContext() {
-  
-}
-
 export class AudioEngine {
 
   /**
+   * `AudioContext` のインスタンス
+   * 
    * @type {AudioContext}
    */
   audioContext;
 
   /**
+   * `AudioContext.decodeAudioData()` で取得した、 hell.mp3 の `AudioBuffer` のインスタンス
+   * 
    * @type {AudioBuffer}
    */
   hellAudioBuffer;
 
   /**
+   * `AudioContext.decodeAudioData()` で取得した、 heaven.mp3 の `AudioBuffer` のインスタンス
+   * 
    * @type {AudioBuffer}
    */
   heavenAudioBuffer;
 
   /**
+   * `AudioEngine` のインスタンスを生成します
    * 
-   * @param {string} hellAudioPath 
-   * @param {string} heavenAudioPath 
+   * @param {string} hellAudioPath hell.mp3 の HTML からの相対パス
+   * @param {string} heavenAudioPath heaven.mp3 の HTML からの相対パス
    */
   constructor(
     hellAudioPath,
@@ -36,6 +39,8 @@ export class AudioEngine {
     this.audioContext = new AudioContext();
 
     /**
+     * オーディオを読み込みます
+     * 
      * @param {string} path オーディオのパス
      * @param {(audioBuffer: AudioBuffer) => void} assignAudioBuffer AudioBuffer をメンバに代入する関数
      */
@@ -60,9 +65,10 @@ export class AudioEngine {
 
   }
 
-  /**
+  /** 
+   * 音声を再生します
    * 
-   * @param {AudioBuffer} audioBuffer 
+   * @param {AudioBuffer} audioBuffer 再生する音声の `AudioBuffer`
    */
   #playAudio(audioBuffer) {
     
@@ -77,12 +83,19 @@ export class AudioEngine {
     source.buffer = audioBuffer;
     source.connect(this.audioContext.destination);
     source.start(0);
+
   }
 
+  /**
+   * hell.mp3 を再生します
+   */
   playHellAudio() {
     this.#playAudio(this.hellAudioBuffer);
   }
 
+  /**
+   * heaven.mp3 を再生します
+   */
   playHeavenAudio() {
     this.#playAudio(this.heavenAudioBuffer);
   }

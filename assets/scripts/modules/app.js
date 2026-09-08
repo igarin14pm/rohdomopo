@@ -51,6 +51,8 @@ export class RohdomopoApp {
   startPauseButtonElement;
 
   /**
+   * 音声を再生する `AudioEngine` のインスタンス
+   * 
    * @type {AudioEngine}
    */
   audioEngine = new AudioEngine(
@@ -141,6 +143,7 @@ export class RohdomopoApp {
       this.stateHeadingElement.textContent = '五分間の徒労 〜 人間性の剥奪';
       this.stateMessageElement.textContent = '問うな。理由を求める時間は終わった。ただキーボードを叩け。';
 
+      // hell.mp3 を再生
       this.audioEngine.playHellAudio();
 
     } else if (state === RohdomopoTimerState.HEAVEN) { // "二十五分間の解放" 状態に変化時
@@ -153,6 +156,7 @@ export class RohdomopoApp {
       this.stateHeadingElement.textContent = '二十五分間の解放 〜 人間性の奪還';
       this.stateMessageElement.textContent = '見上げよ。世界は彩りに満ちている。思考の翼を広げ、どこへでも飛んでゆけ。';
 
+      // heaven.mp3 を再生
       this.audioEngine.playHeavenAudio();
 
     }
