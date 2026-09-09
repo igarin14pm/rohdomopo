@@ -1,6 +1,7 @@
 'use strict';
 
 import { RohdomopoApp } from './modules/app.js';
+import { AudioEngine } from './modules/audio-engine.js';
 
 /**
  * HTMLの `<body>`
@@ -45,6 +46,17 @@ const timerDisplayElement = document.querySelector('#timer-display');
 const startPauseButtonElement = document.querySelector('#start-pause-button');
 
 /**
+ * 音声を再生する `AudioEngine` のインスタンス
+ * 
+ * @type {AudioEngine}
+ */
+const audioEngine = new AudioEngine(
+  './assets/audio/hell.mp3',
+  './assets/audio/heaven.mp3',
+  './assets/audio/count.mp3'
+);
+
+/**
  * Webアプリを実行する `RohdomopoApp` のインスタンス
  * 
  * @type {RohdomopoApp}
@@ -55,7 +67,8 @@ const rohdomopoApp = new RohdomopoApp(
   stateHeadingElement,
   stateMessageElement,
   timerDisplayElement,
-  startPauseButtonElement
+  startPauseButtonElement,
+  audioEngine
 );
 
 // DOM読み込み終了時に実行

@@ -11,6 +11,27 @@ export class AudioEngine {
   audioContext;
 
   /**
+   * 音量を調節するノード
+   * 
+   * @type {GainNode}
+   */
+  gainNode;
+
+  /**
+   * 音量の値 (`0.0` 〜 `1.0`)
+   */
+  get gain() {
+    return this.gainNode.gain.value;
+  }
+
+  /**
+   * 音量の値 (`0.0` 〜 `1.0`)
+   */
+  set gain(newValue) {
+    this.gainNode.gain.value = newValue
+  }
+
+  /**
    * `AudioContext.decodeAudioData()` で取得した、 hell.mp3 の `AudioBuffer` のインスタンス
    * 
    * @type {AudioBuffer}
@@ -46,6 +67,8 @@ export class AudioEngine {
 
     const AudioContext = window.AudioContext || window.webkitAudioContext;
     this.audioContext = new AudioContext();
+
+    this.gainNode = this.audioContext.createGain();
 
     /**
      * オーディオを読み込みます
@@ -96,7 +119,8 @@ export class AudioEngine {
 
     const source = this.audioContext.createBufferSource();
     source.buffer = audioBuffer;
-    source.connect(this.audioContext.destination);
+    source.connect(this.gainNode);
+    this.gainNode.connect(this.audioContext.destination);
     source.start(0);
 
   }
@@ -120,6 +144,13 @@ export class AudioEngine {
    */
   playCountAudio() {
     this.#playAudio(this.countAudioBuffer);
+  }
+
+  /**
+   * `AudioContext` を破棄して終了します
+   */
+  close() {
+    this.audioContext.close();
   }
 
 }
