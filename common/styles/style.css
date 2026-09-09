@@ -1,5 +1,21 @@
 @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@200..900&display=swap');
 
+@keyframes breathing-loading-button {
+
+  0% {
+    opacity: 85%;
+  }
+
+  50% {
+    opacity: 70%;
+  }
+
+  100% {
+    opacity: 85%;
+  }
+
+}
+
 :root {
   /* colors */
   --color-hell-dark: #1d0400;
@@ -196,6 +212,11 @@ p {
   border-color: var(--color-heaven-dark);
   background-color: var(--color-heaven-dark);
   color: var(--color-heaven-light);
+}
+
+.button.loading {
+  animation: 2s infinite normal breathing-loading-button;
+  cursor: not-allowed;
 }
 
 /* responsive design */

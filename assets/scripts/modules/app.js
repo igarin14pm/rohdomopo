@@ -101,6 +101,7 @@ export class RohdomopoApp {
     this.stateMessageElement = stateMessageElement;
     this.timerDisplayElement = timerDisplayElement;
     this.startPauseButtonElement = startPauseButtonElement;
+    this.audioEngine = audioEngine;
 
     this.audioEngine = audioEngine;
 
@@ -136,7 +137,11 @@ export class RohdomopoApp {
    * @type {() => void}
    */
   onCountingSeconds = () => {
-    this.audioEngine.playCountAudio();
+    try {
+      this.audioEngine.playCountAudio();
+    } catch(error) {
+      console.error(`Failed to play the \"count\" audio file.\n${error.message}`);
+    }
   }
 
   /**
@@ -157,7 +162,11 @@ export class RohdomopoApp {
       this.stateMessageElement.textContent = '問うな。理由を求める時間は終わった。ただキーボードを叩け。';
 
       // hell.mp3 を再生
-      this.audioEngine.playHellAudio();
+      try {
+        this.audioEngine.playHellAudio();
+      } catch(error) {
+        console.error(`Failed to play the \"hell\" audio file.\n${error.message}`);
+      }
 
     } else if (state === RohdomopoTimerState.HEAVEN) { // "二十五分間の解放" 状態に変化時
 
@@ -170,7 +179,11 @@ export class RohdomopoApp {
       this.stateMessageElement.textContent = '見上げよ。世界は彩りに満ちている。思考の翼を広げ、どこへでも飛んでゆけ。';
 
       // heaven.mp3 を再生
-      this.audioEngine.playHeavenAudio();
+      try {
+        this.audioEngine.playHeavenAudio();
+      } catch(error) {
+        console.error(`Failed to play the \"heaven\" audio file.\n${error.message}`);
+      }
 
     }
   }
@@ -229,16 +242,29 @@ export class RohdomopoApp {
   }
 
   /**
+   * ボタンを "音声を読み込み中..." の状態から実際に押せるように変更します
+   */
+  enableStartPauseButton() {
+    this.startPauseButtonElement.classList.remove('loading');
+    this.startPauseButtonElement.textContent = 'カウントダウンを開始';
+    this.startPauseButtonElement.addEventListener('click', this.onClickStartPauseButton);
+  }
+
+  /**
    * 起動時に行う動作です  
    * Webページ表示時に実行します
    */
-  initialize() {
+  async initialize() {
 
     // "このWebアプリでは音声が流れます" ダイアログをモーダルで表示
     this.soundDialogElement.showModal();
 
-    // "カウントダウンを開始・一時停止" ボタンにリスナーを設定
-    this.startPauseButtonElement.addEventListener('click', this.onClickStartPauseButton);
+    // オーディオファイルを読み込む
+    // 読み込み終わるまで待機
+    await this.audioEngine.load();
+
+    // "カウントダウンを開始・一時停止" ボタンを押せるように変更
+    this.enableStartPauseButton();
     
   }
 
