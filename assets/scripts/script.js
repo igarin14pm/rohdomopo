@@ -72,7 +72,7 @@ const rohdomopoApp = new RohdomopoApp(
 );
 
 // DOM読み込み終了時に実行
-window.addEventListener('DOMContentLoaded', () => {
+window.addEventListener('DOMContentLoaded', async () => {
   rohdomopoApp.initialize();
 });
 

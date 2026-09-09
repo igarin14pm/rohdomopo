@@ -12,7 +12,9 @@ let isAsserted = false;
 /**
  * 各テストの前に実行されるコールバック関数です
  * 
- * @type {() => void}
+ * @async
+ * @function
+ * @type {() => Promise<void>}
  */
 let onBeforeEach;
 
@@ -28,7 +30,9 @@ export function beforeEach(callback) {
 /**
  * 各テストの後に実行されるコールバック関数です
  * 
- * @type {() => void}
+ * @async
+ * @function
+ * @type {() => Promise<void>}
  */
 let onAfterEach;
 
@@ -185,7 +189,7 @@ export async function test(name, testFn) {
   isAsserted = false;
 
   // `beforeEach()` で登録したコールバックを呼び出す
-  onBeforeEach();
+  await onBeforeEach();
 
   // テストを実行
   try {
@@ -208,7 +212,7 @@ export async function test(name, testFn) {
   }
 
   // `afterEach()` で登録したコールバックを呼び出す
-  onAfterEach();
+  await onAfterEach();
 
 }
 

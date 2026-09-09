@@ -31,10 +31,16 @@ async function startTests() {
    * 
    * @type {AudioEngine} audioEngine
    */
-  let audioEngine;
+  const audioEngine = new AudioEngine(
+    './assets/audio/hell_test.mp3',
+    './assets/audio/heaven_test.mp3',
+    './assets/audio/count_test.mp3'
+  );
+  audioEngine.gain = 0;
 
-  beforeEach(() => {
+  await audioEngine.load();
 
+  beforeEach(async () => {
     htmlContainer.innerHTML = 
       '<dialog closedby="any" id="sound-dialog">' +
       '  <h1>🔊</h1>' +
@@ -47,15 +53,10 @@ async function startTests() {
       '    <h1 id="state-heading">徒労のカウントダウンを開始する</h1>' +
       '    <p id="state-message"></p>' +
       '    <p id="timer-display" class="timer-display">05:00.00</p>' +
-      '    <button id="start-pause-button" class="button">カウントダウンを開始</button>' +
+      '    <button id="start-pause-button" class="button loading">音声を読み込み中...</button>' +
       '  </div>' +
       '</main>';
 
-    audioEngine = new AudioEngine(
-      './assets/audio/hell_test.mp3',
-      './assets/audio/heaven_test.mp3',
-      './assets/audio/count_test.mp3'
-    );
     audioEngine.gain = 0.0;
 
   });
@@ -65,8 +66,6 @@ async function startTests() {
     const body = document.body;
     body.classList.remove('hell');
     body.classList.remove('heaven');
-
-    audioEngine.close();
 
   });
 
@@ -435,6 +434,29 @@ async function startTests() {
 
     expect(rohdomopoApp.rohdomopoTimer.isCountingDown).toBe(false);
     expect(rohdomopoApp.startPauseButtonElement.textContent).toBe('カウントダウンを再開');
+  });
+
+  await test('`RohdomopoApp.enableStartPauseButton()`', () => {
+    const body = document.body;
+    const soundDialogElement = htmlContainer.querySelector('#sound-dialog');
+    const stateHeadingElement = htmlContainer.querySelector('#state-heading');
+    const stateMessageElement = htmlContainer.querySelector('#state-message');
+    const timerDisplayElement = htmlContainer.querySelector('#timer-display');
+    const startPauseButtonElement = htmlContainer.querySelector('#start-pause-button');
+    const rohdomopoApp = new App.RohdomopoApp(
+      body,
+      soundDialogElement,
+      stateHeadingElement,
+      stateMessageElement,
+      timerDisplayElement,
+      startPauseButtonElement,
+      audioEngine
+    );
+
+    rohdomopoApp.enableStartPauseButton();
+
+    expect(rohdomopoApp.startPauseButtonElement.classList.contains('loading')).toBe(false);
+    expect(rohdomopoApp.startPauseButtonElement.textContent).toBe('カウントダウンを開始');
   });
 
   // -------- /assets/scripts/modules/rohdomopo-timer.js --------
@@ -993,6 +1015,9 @@ async function startTests() {
     expect(time).toBeGreaterThan(300 * 0.9);
     expect(time).toBeLessThan(300 * 1.1);
   });
+
+  // -------- `AudioContext` をクローズ --------
+  audioEngine.close();
 
   // -------- テストが終了したことを示すメッセージ --------
 
