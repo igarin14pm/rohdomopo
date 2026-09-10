@@ -2,6 +2,8 @@
 
 import { RohdomopoApp } from './modules/app.js';
 import { AudioEngine } from './modules/audio-engine.js';
+import { setTimeout } from '../../common/scripts/timers-promises.js';
+import { RohdomopoTimerState } from './modules/rohdomopo-timer.js';
 
 /**
  * HTMLの `<body>`
@@ -93,3 +95,89 @@ console.info(
 console.info(
   doSomething('8J+klPCfkq0g44KP44GW44KP44GW44Kz44Oz44K944O844Or44KS6ZaL44GP44Gq44KT44Gm44CB44KC44GX44GL44GX44Gm44CB44K944O844K544Kz44O844OJ44Gr6IiI5ZGz44GM44GK44GC44KK44Gn44GZ44Gt77yf77yf44GT44Gh44KJ44GL44KJ44Gp44GG44Ge77yB77yBDQrwn5GH8J+Pu/CfkYfwn4+78J+Rh/Cfj7sNCmh0dHBzOi8vZ2l0aHViLmNvbS9pZ2FyaW4xNHBtL3JvaGRvbW9wbw==')
 );
+
+/**
+ * 時間の値 (ミリ秒) をタイマーの長さの値 (1/100秒) に変換します
+ * 
+ * @param {number} duration_ms 時間の値 (ミリ秒)
+ * @returns {number} タイマーの長さの値 (1/100秒)
+ */
+export function getValidDuration(duration_ms) {
+  let result;
+  if (duration_ms > 59 * 60 * 1000 + 59 * 1000 + 990) {
+    result = (59 * 60 * 1000 + 59 * 1000 + 990);
+  } else if (duration_ms < 10) {
+    result = 10;
+  } else {
+    result = duration_ms;
+  }
+  return result;
+}
+
+/**
+ * コンソールから "五分間の徒労" タイマーの長さを設定するためのメソッドです
+ * 
+ * @function
+ * @param {number} duration_ms タイマーの長さ (ミリ秒)
+ */
+window.setHellTimerDuration = async (duration_ms) => {
+  const validDuration_ms = getValidDuration(duration_ms);
+  const rohdomopoTimer = rohdomopoApp.rohdomopoTimer;
+  const hellTimer = rohdomopoTimer.hellTimer;
+
+  rohdomopoTimer.pause();
+  await setTimeout(20);
+  hellTimer.setDuration(validDuration_ms);
+  timerDisplayElement.textContent = rohdomopoTimer.textContent;
+  rohdomopoApp.onCountingDown();
+
+  console.log(`hellTimer duration set to ${hellTimer.duration_cs * 10} ms.`);
+};
+
+/**
+ * コンソールから "二十五分間の解放" タイマーの長さを設定するためのメソッドです
+ * 
+ * @function
+ * @param {number} duration_ms タイマーの長さ (ミリ秒)
+ */
+window.setHeavenTimerDuration = async (duration_ms) => {
+  const validDuration_ms = getValidDuration(duration_ms);
+  const rohdomopoTimer = rohdomopoApp.rohdomopoTimer;
+  const heavenTimer = rohdomopoTimer.heavenTimer;
+
+  rohdomopoTimer.pause();
+  await setTimeout(20);
+  heavenTimer.setDuration(validDuration_ms);
+  timerDisplayElement.textContent = rohdomopoTimer.textContent;
+  rohdomopoApp.onCountingDown();
+
+  console.log(`heavenTimer duration set to ${heavenTimer.duration_cs * 10} ms.`);
+};
+
+/**
+ * コンソールから "五分間の徒労" 状態に切り替えるためのメソッドです
+ */
+window.switchStateToHell = () => {
+  const rohdomopoTimer = rohdomopoApp.rohdomopoTimer;
+  if (rohdomopoTimer.state === RohdomopoTimerState.HELL) return;
+
+  rohdomopoTimer.switchState(RohdomopoTimerState.HELL);
+  timerDisplayElement.textContent = rohdomopoTimer.textContent;
+  rohdomopoApp.onCountingDown();
+
+  console.log('State switched to Hell.');
+};
+
+/**
+ * コンソールから "二十五分間の解放" 状態に切り替えるためのメソッドです
+ */
+window.switchStateToHeaven = () => {
+  const rohdomopoTimer = rohdomopoApp.rohdomopoTimer;
+  if (rohdomopoTimer.state === RohdomopoTimerState.HEAVEN) return;
+
+  rohdomopoTimer.switchState(RohdomopoTimerState.HEAVEN);
+  timerDisplayElement.textContent = rohdomopoTimer.textContent;
+  rohdomopoApp.onCountingDown();
+
+  console.log('State switched to Heaven.');
+};

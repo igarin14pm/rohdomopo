@@ -102,6 +102,16 @@ export class CountDownTimer {
   }
 
   /**
+   * タイマーの長さを設定します
+   * 
+   * @param {number} duration_ms タイマーの長さ (ミリ秒)
+   */
+  setDuration(duration_ms) {
+    this.duration_cs = Math.floor(duration_ms / 10);
+    this.currentTime_cs = Math.floor(duration_ms / 10);
+  }
+
+  /**
    * タイマーを開始します
    * 
    * @async
@@ -274,17 +284,6 @@ export class RohdomopoTimer {
   }
 
   /**
-   * タイマーの状態を表します  
-   * `RohdomopoTimerState` のプロパティの値になります
-   * 
-   * @type {string}
-   */
-  set state(newValue) {
-    this.#state = newValue;
-    this.onStateChanged(this.#state);
-  }
-
-  /**
    * タイマーの残り時間 (センチ秒: 100分の1秒)  
    * `state` に応じた残り時間を取得します
    * 
@@ -313,6 +312,8 @@ export class RohdomopoTimer {
       return this.hellTimer.textContent;
     } else if (this.state === RohdomopoTimerState.HEAVEN) { // "二十五分間の解放" 時は `this.heavenTimer` の値を返す
       return this.heavenTimer.textContent;
+    } else if (this.state === RohdomopoTimerState.NORMAL) { // タイマー開始前は `this.hellTimer` の時間を返す
+      return this.hellTimer.textContent;
     } else {
       return '';
     }
@@ -340,6 +341,25 @@ export class RohdomopoTimer {
   }
 
   /**
+   * タイマーの状態を切り替えます
+   * 
+   * @param {string} state `RohdomopoTimerState` のプロパティの値
+   */
+  switchState(state) {
+    if (state === RohdomopoTimerState.HELL) {
+      this.#state = RohdomopoTimerState.HELL;
+      this.hellTimer.reset();
+      this.heavenTimer.reset();
+      this.onStateChanged(state);
+    } else if (state === RohdomopoTimerState.HEAVEN) {
+      this.#state = RohdomopoTimerState.HEAVEN;
+      this.hellTimer.reset();
+      this.heavenTimer.reset();
+      this.onStateChanged(state);
+    }
+  }
+
+  /**
    * タイマーを開始します
    * 
    * @async
@@ -353,7 +373,7 @@ export class RohdomopoTimer {
 
     // 初回呼び出し時に状態を "五分間の徒労" に変更
     if (this.state != RohdomopoTimerState.HELL && this.state != RohdomopoTimerState.HEAVEN) {
-      this.state = RohdomopoTimerState.HELL;
+      this.switchState(RohdomopoTimerState.HELL);
     }
 
     // `this.isCountingDown` の値を更新
@@ -368,8 +388,7 @@ export class RohdomopoTimer {
 
         // タイマー終了時には "二十五分間の解放" 状態に切り替え
         if (this.hellTimer.isFinished) {
-          this.state = RohdomopoTimerState.HEAVEN;
-          this.hellTimer.reset();
+         this.switchState(RohdomopoTimerState.HEAVEN);
         }
 
       } else if (this.state === RohdomopoTimerState.HEAVEN) { // "二十五分間の解放" 状態時
@@ -380,10 +399,8 @@ export class RohdomopoTimer {
 
         // タイマー終了時には "五分間の徒労" 状態に切り替え
         if (this.heavenTimer.isFinished) {
-          this.state = RohdomopoTimerState.HELL;
-          this.heavenTimer.reset();
+          this.switchState(RohdomopoTimerState.HELL);
         }
-
       }
     }
   }
