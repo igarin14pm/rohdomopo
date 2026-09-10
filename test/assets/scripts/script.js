@@ -146,7 +146,7 @@ async function startTests() {
         25 * 60 * 1000
       );
 
-      rohdomopoApp.rohdomopoTimer.state = 'hell';
+      rohdomopoApp.rohdomopoTimer.switchState('hell');
       rohdomopoApp.onCountingDown();
 
       expect(timerDisplayElement.classList.contains('one-minute-left')).toBe(false);
@@ -174,7 +174,7 @@ async function startTests() {
         25 * 60 * 1000
       );
 
-      rohdomopoApp.rohdomopoTimer.state = 'hell';
+      rohdomopoApp.rohdomopoTimer.switchState('hell');
       rohdomopoApp.onCountingDown();
 
       expect(timerDisplayElement.classList.contains('one-minute-left')).toBe(true);
@@ -203,7 +203,7 @@ async function startTests() {
       );
 
 
-      rohdomopoApp.rohdomopoTimer.state = 'hell';
+      rohdomopoApp.rohdomopoTimer.switchState('hell');
       rohdomopoApp.rohdomopoTimer.start();
       await TimersPromises.setTimeout(100);
       rohdomopoApp.rohdomopoTimer.pause();
@@ -234,7 +234,7 @@ async function startTests() {
       );
 
 
-      rohdomopoApp.rohdomopoTimer.state = 'heaven';
+      rohdomopoApp.rohdomopoTimer.switchState('heaven');
       rohdomopoApp.rohdomopoTimer.start();
       await TimersPromises.setTimeout(100);
       rohdomopoApp.rohdomopoTimer.pause();
@@ -738,37 +738,6 @@ async function startTests() {
     expect(state4).toBe('hell');
   });
 
-  await test('`RohdomopoTimer.state` - setter', () => {
-    let isOnStateChangedCallbackCalled1 = false;
-    let isOnStateChangedCallbackCalled2 = false;
-    const rohdomopoTimer1 = new RohdomopoTimer.RohdomopoTimer(
-      5 * 60 * 1000, 
-      25 * 60 * 1000, 
-      () => { },
-      () => { },
-      () => {
-        isOnStateChangedCallbackCalled1 = true;
-      }
-    );
-    const rohdomopoTimer2 = new RohdomopoTimer.RohdomopoTimer(
-      5 * 60 * 1000, 
-      25 * 60 * 1000, 
-      () => { },
-      () => { },
-      () => {
-        isOnStateChangedCallbackCalled2 = true;
-      }
-    );
-
-    rohdomopoTimer1.state = 'hell';
-    rohdomopoTimer2.state = 'heaven';
-
-    expect(rohdomopoTimer1.state).toBe('hell');
-    expect(isOnStateChangedCallbackCalled1).toBe(true);
-    expect(rohdomopoTimer2.state).toBe('heaven');
-    expect(isOnStateChangedCallbackCalled2).toBe(true);
-  });
-
   await test('`RohdomopoTimer.currentTime_cs` - `RohdomopoTimer.state` が `\'hell\'` のときに `RohdomopoTimer.hellTimer.currentTime.cs` の値が返される', () => {
     const rohdomopoTimer1 = new RohdomopoTimer.RohdomopoTimer(
       5 * 60 * 1000, 
@@ -777,7 +746,7 @@ async function startTests() {
       () => { },
       () => { }
     );
-    rohdomopoTimer1.state = 'hell';
+    rohdomopoTimer1.switchState('hell');
 
     const currenTime_cs = rohdomopoTimer1.currentTime_cs;
 
@@ -792,7 +761,7 @@ async function startTests() {
       () => { },
       () => { }
     );
-    rohdomopoTimer1.state = 'heaven';
+    rohdomopoTimer1.switchState('heaven');
 
     const currenTime_cs = rohdomopoTimer1.currentTime_cs;
 
@@ -814,8 +783,8 @@ async function startTests() {
       () => { },
       () => { }
     );
-    rohdomopoTimer1.state = 'hell';
-    rohdomopoTimer2.state = 'hell';
+    rohdomopoTimer1.switchState('hell');
+    rohdomopoTimer2.switchState('hell');
 
     const textContent1 = rohdomopoTimer1.textContent;
     const textContent2 = rohdomopoTimer2.textContent;
@@ -839,8 +808,8 @@ async function startTests() {
       () => { },
       () => { }
     );
-    rohdomopoTimer1.state = 'heaven';
-    rohdomopoTimer2.state = 'heaven';
+    rohdomopoTimer1.switchState('heaven');
+    rohdomopoTimer2.switchState('heaven');
 
     const textContent1 = rohdomopoTimer1.textContent;
     const textContent2 = rohdomopoTimer2.textContent;
@@ -870,6 +839,142 @@ async function startTests() {
 
     expect(textContent1).toBe('05:00.00');
     expect(textContent2).toBe('12:34.56');
+  });
+
+  await test('`RohdomopoTimer.switchState()` - 引数に `\'hell\'` を渡した時に `RohdimopoTimer.state` が `\'hell\'` に変更される', () => {
+    const rohdomopoTimer = new RohdomopoTimer.RohdomopoTimer(
+      5 * 60 * 1000,
+      25 * 60 * 1000,
+      () => { },
+      () => { },
+      () => { }
+    );
+    const stateBeforeSwitched = rohdomopoTimer.state;
+
+    rohdomopoTimer.switchState('hell');
+    const stateAfterSwitched = rohdomopoTimer.state;
+
+    expect(stateBeforeSwitched).toBe('normal');
+    expect(stateAfterSwitched).toBe('hell');
+  });
+
+  await test('`RohdomopoTimer.switchState()` - 引数に `\'hell\'` を渡したときにタイマーがリセットされる', async () => {
+    const rohdomopoTimer1 = new RohdomopoTimer.RohdomopoTimer(
+      5 * 60 * 1000,
+      25 * 60 * 1000,
+      () => { },
+      () => { },
+      () => { }
+    );
+    const rohdomopoTimer2 = new RohdomopoTimer.RohdomopoTimer(
+      12 * 60 * 1000 + 34 * 1000 + 560,
+      54 * 60 * 1000 + 32 * 1000 + 100,
+      () => { },
+      () => { },
+      () => { }
+    );
+    rohdomopoTimer1.hellTimer.start();
+    rohdomopoTimer1.heavenTimer.start();
+    rohdomopoTimer2.hellTimer.start();
+    rohdomopoTimer2.heavenTimer.start();
+    await TimersPromises.setTimeout(100);
+    rohdomopoTimer1.hellTimer.pause();
+    rohdomopoTimer1.heavenTimer.pause();
+    rohdomopoTimer2.hellTimer.pause();
+    rohdomopoTimer2.heavenTimer.pause();
+
+    rohdomopoTimer1.switchState('hell');
+    rohdomopoTimer2.switchState('hell');
+
+    expect(rohdomopoTimer1.hellTimer.currentTime_cs).toBe(5 * 60 * 100);
+    expect(rohdomopoTimer1.heavenTimer.currentTime_cs).toBe(25 * 60 * 100);
+    expect(rohdomopoTimer2.hellTimer.currentTime_cs).toBe(12 * 60 * 100 + 34 * 100 + 56);
+    expect(rohdomopoTimer2.heavenTimer.currentTime_cs).toBe(54 * 60 * 100 + 32 * 100 + 10);
+  });
+
+  await test('`RohdomopoTimer.switchState()` - 引数に `\'hell\'` を渡した時に `RohdimopoTimer.onStateChanged` が実行される', () => {
+    let isOnStateChangedCalled = false;
+    const rohdomopoTimer = new RohdomopoTimer.RohdomopoTimer(
+      5 * 60 * 1000,
+      25 * 60 * 1000,
+      () => { },
+      () => { },
+      () => {
+        isOnStateChangedCalled = true;
+      }
+    );
+
+    rohdomopoTimer.switchState('hell');
+
+    expect(isOnStateChangedCalled).toBe(true);
+  });
+
+  await test('`RohdomopoTimer.switchState()` - 引数に `\'heaven\'` を渡した時に `RohdimopoTimer.state` が `\'heaven\'` に変更される', () => {
+    const rohdomopoTimer = new RohdomopoTimer.RohdomopoTimer(
+      5 * 60 * 1000,
+      25 * 60 * 1000,
+      () => { },
+      () => { },
+      () => { }
+    );
+    const stateBeforeSwitched = rohdomopoTimer.state;
+
+    rohdomopoTimer.switchState('heaven');
+    const stateAfterSwitched = rohdomopoTimer.state;
+
+    expect(stateBeforeSwitched).toBe('normal');
+    expect(stateAfterSwitched).toBe('heaven');
+  });
+
+  await test('`RohdomopoTimer.switchState()` - 引数に `\'heaven\'` を渡したときにタイマーがリセットされる', async () => {
+    const rohdomopoTimer1 = new RohdomopoTimer.RohdomopoTimer(
+      5 * 60 * 1000,
+      25 * 60 * 1000,
+      () => { },
+      () => { },
+      () => { }
+    );
+    const rohdomopoTimer2 = new RohdomopoTimer.RohdomopoTimer(
+      12 * 60 * 1000 + 34 * 1000 + 560,
+      54 * 60 * 1000 + 32 * 1000 + 100,
+      () => { },
+      () => { },
+      () => { }
+    );
+    rohdomopoTimer1.hellTimer.start();
+    rohdomopoTimer1.heavenTimer.start();
+    rohdomopoTimer2.hellTimer.start();
+    rohdomopoTimer2.heavenTimer.start();
+    await TimersPromises.setTimeout(100);
+    rohdomopoTimer1.hellTimer.pause();
+    rohdomopoTimer1.heavenTimer.pause();
+    rohdomopoTimer2.hellTimer.pause();
+    rohdomopoTimer2.heavenTimer.pause();
+
+    rohdomopoTimer1.switchState('heaven');
+    rohdomopoTimer2.switchState('heaven');
+
+    expect(rohdomopoTimer1.hellTimer.currentTime_cs).toBe(5 * 60 * 100);
+    expect(rohdomopoTimer1.heavenTimer.currentTime_cs).toBe(25 * 60 * 100);
+    expect(rohdomopoTimer2.hellTimer.currentTime_cs).toBe(12 * 60 * 100 + 34 * 100 + 56);
+    expect(rohdomopoTimer2.heavenTimer.currentTime_cs).toBe(54 * 60 * 100 + 32 * 100 + 10);
+  });
+
+  await test('`RohdomopoTimer.switchState()` - 引数に `\'heaven\'` を渡した時に `RohdimopoTimer.onStateChanged` が実行される', () => {
+    let isOnStateChangedCalled = false;
+    const rohdomopoTimer = new RohdomopoTimer.RohdomopoTimer(
+      5 * 60 * 1000,
+      25 * 60 * 1000,
+      () => { },
+      () => { },
+      () => {
+        isOnStateChangedCalled = true;
+      }
+    );
+
+    rohdomopoTimer.switchState('heaven');
+
+    expect(isOnStateChangedCalled).toBe(true);
   });
 
   await test('`RohdomopoTimer.start()` - 初回呼び出し時に `state` に `\'hell\'` が代入される', () => {
@@ -902,8 +1007,8 @@ async function startTests() {
       () => { },
       () => { }
     );
-    rohdomopoTimer1.state = 'hell';
-    rohdomopoTimer2.state = 'heaven';
+    rohdomopoTimer1.switchState('hell');
+    rohdomopoTimer2.switchState('heaven');
 
     rohdomopoTimer1.start();
     rohdomopoTimer2.start();
@@ -930,8 +1035,8 @@ async function startTests() {
       () => { },
       () => { }
     );
-    rohdomopoTimer1.state = 'hell';
-    rohdomopoTimer2.state = 'heaven';
+    rohdomopoTimer1.switchState('hell');
+    rohdomopoTimer2.switchState('heaven');
 
     rohdomopoTimer1.start();
     rohdomopoTimer2.start();
@@ -963,8 +1068,8 @@ async function startTests() {
       () => { },
       () => { }
     );
-    rohdomopoTimer1.state = 'hell';
-    rohdomopoTimer2.state = 'heaven';
+    rohdomopoTimer1.switchState('hell');
+    rohdomopoTimer2.switchState('heaven');
 
     rohdomopoTimer1.start();
     rohdomopoTimer2.start();
@@ -991,8 +1096,8 @@ async function startTests() {
       () => { },
       () => { }
     );
-    rohdomopoTimer1.state = 'hell';
-    rohdomopoTimer2.state = 'heaven';
+    rohdomopoTimer1.switchState('hell');
+    rohdomopoTimer2.switchState('heaven');
 
     rohdomopoTimer1.start();
     rohdomopoTimer2.start();
