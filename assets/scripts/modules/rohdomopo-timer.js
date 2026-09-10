@@ -102,6 +102,16 @@ export class CountDownTimer {
   }
 
   /**
+   * タイマーの長さを設定します
+   * 
+   * @param {number} duration_ms タイマーの長さ (ミリ秒)
+   */
+  setDuration(duration_ms) {
+    this.duration_cs = Math.floor(duration_ms / 10);
+    this.currentTime_cs = Math.floor(duration_ms / 10);
+  }
+
+  /**
    * タイマーを開始します
    * 
    * @async
@@ -313,6 +323,8 @@ export class RohdomopoTimer {
       return this.hellTimer.textContent;
     } else if (this.state === RohdomopoTimerState.HEAVEN) { // "二十五分間の解放" 時は `this.heavenTimer` の値を返す
       return this.heavenTimer.textContent;
+    } else if (this.state === RohdomopoTimerState.NORMAL) { // タイマー開始前は `this.hellTimer` の時間を返す
+      return this.hellTimer.textContent;
     } else {
       return '';
     }

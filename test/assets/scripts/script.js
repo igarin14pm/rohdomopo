@@ -533,7 +533,23 @@ async function startTests() {
     expect(isOnCountingDownCalled).toBe(true);
   });
 
-  await test('`CountDonwTimer.start()` - `CountDownTimer.currentTime_cs` が減少する', async () => {
+  await test('`CountDownTimer.setDuration()`', async () => {
+    const countDownTimer1 = new RohdomopoTimer.CountDownTimer(5 * 60 * 1000, () => { }, () => { });
+    const countDownTimer2 = new RohdomopoTimer.CountDownTimer(10000, () => { }, () => { });
+    countDownTimer2.start();
+    await TimersPromises.setTimeout(100);
+    countDownTimer2.pause();
+
+    countDownTimer1.setDuration(25 * 60 * 1000);
+    countDownTimer2.setDuration(20000);
+
+    expect(countDownTimer1.duration_cs).toBe(25 * 60 * 100);
+    expect(countDownTimer1.currentTime_cs).toBe(25 * 60 * 100);
+    expect(countDownTimer2.duration_cs).toBe(2000);
+    expect(countDownTimer2.currentTime_cs).toBe(2000);
+  });
+
+  await test('`CountDownTimer.start()` - `CountDownTimer.currentTime_cs` が減少する', async () => {
     const countDownTimer1 = new RohdomopoTimer.CountDownTimer(30000, () => { }, () => { });
     const countDownTimer2 = new RohdomopoTimer.CountDownTimer(12 * 60 * 1000 + 34 * 1000 + 560, () => { }, () => { });
 
@@ -783,7 +799,57 @@ async function startTests() {
     expect(currenTime_cs).toBe(25 * 60 * 100);
   });
 
-  await test('`RohdomopoTimer.textContent`', () => {
+  await test('`RohdomopoTimer.textContent` - \"五分間の徒労\" 状態時', () => {
+    const rohdomopoTimer1 = new RohdomopoTimer.RohdomopoTimer(
+      5 * 60 * 1000, 
+      25 * 60 * 1000, 
+      () => { },
+      () => { },
+      () => { }
+    );
+    const rohdomopoTimer2 = new RohdomopoTimer.RohdomopoTimer(
+      12 * 60 * 1000 + 34 * 1000 + 560,
+      54 * 60 * 1000 + 32 * 1000 + 100,
+      () => { },
+      () => { },
+      () => { }
+    );
+    rohdomopoTimer1.state = 'hell';
+    rohdomopoTimer2.state = 'hell';
+
+    const textContent1 = rohdomopoTimer1.textContent;
+    const textContent2 = rohdomopoTimer2.textContent;
+
+    expect(textContent1).toBe('05:00.00');
+    expect(textContent2).toBe('12:34.56');
+  });
+
+  await test('`RohdomopoTimer.textContent` - \"二十五分間の解放\" 状態時', () => {
+    const rohdomopoTimer1 = new RohdomopoTimer.RohdomopoTimer(
+      5 * 60 * 1000, 
+      25 * 60 * 1000, 
+      () => { },
+      () => { },
+      () => { }
+    );
+    const rohdomopoTimer2 = new RohdomopoTimer.RohdomopoTimer(
+      12 * 60 * 1000 + 34 * 1000 + 560,
+      54 * 60 * 1000 + 32 * 1000 + 100,
+      () => { },
+      () => { },
+      () => { }
+    );
+    rohdomopoTimer1.state = 'heaven';
+    rohdomopoTimer2.state = 'heaven';
+
+    const textContent1 = rohdomopoTimer1.textContent;
+    const textContent2 = rohdomopoTimer2.textContent;
+
+    expect(textContent1).toBe('25:00.00');
+    expect(textContent2).toBe('54:32.10');
+  })
+
+  await test('`RohdomopoTimer.textContent` - タイマー開始前', () => {
     const rohdomopoTimer1 = new RohdomopoTimer.RohdomopoTimer(
       5 * 60 * 1000, 
       25 * 60 * 1000, 
@@ -799,23 +865,11 @@ async function startTests() {
       () => { }
     );
 
-    const noState1 = rohdomopoTimer1.textContent;
-    const noState2 = rohdomopoTimer2.textContent;
-    rohdomopoTimer1.state = 'hell';
-    rohdomopoTimer2.state = 'hell';
-    const hell1 = rohdomopoTimer1.textContent;
-    const hell2 = rohdomopoTimer2.textContent;
-    rohdomopoTimer1.state = 'heaven';
-    rohdomopoTimer2.state = 'heaven';
-    const heaven1 = rohdomopoTimer1.textContent;
-    const heaven2 = rohdomopoTimer2.textContent;
+    const textContent1 = rohdomopoTimer1.textContent;
+    const textContent2 = rohdomopoTimer2.textContent;
 
-    expect(noState1).toBe('');
-    expect(noState2).toBe('');
-    expect(hell1).toBe('05:00.00');
-    expect(hell2).toBe('12:34.56');
-    expect(heaven1).toBe('25:00.00');
-    expect(heaven2).toBe('54:32.10');
+    expect(textContent1).toBe('05:00.00');
+    expect(textContent2).toBe('12:34.56');
   });
 
   await test('`RohdomopoTimer.start()` - 初回呼び出し時に `state` に `\'hell\'` が代入される', () => {
@@ -1017,6 +1071,7 @@ async function startTests() {
   });
 
   // -------- `AudioContext` をクローズ --------
+
   audioEngine.close();
 
   // -------- テストが終了したことを示すメッセージ --------
