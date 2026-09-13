@@ -135,6 +135,9 @@ export class CountDownTimer {
 
     for await (const i of setInterval(10)) { // 10 ms 間隔でループ処理
 
+      // `this.#isCountingDown` に `false` が代入されたらループを終了、タイマーを停止
+      if (!this.#isCountingDown) { break; }
+
       // ループ呼び出し時の日時と `start()` 呼び出し時の日時から経過時間を計算
       // 開発当初は `this.currentTime_cs += 1` としていたが、`setInterval()` によって無視できないレベルの時間の誤差が発生したため、現在時刻と開始時刻の差分で計算するように変更
       const date = new Date();
@@ -155,10 +158,6 @@ export class CountDownTimer {
       }
       previousTime_cs = this.currentTime_cs;
 
-      // `this.#isCountingDown` に `false` が代入されたらループを終了、タイマーを停止
-      if (!this.#isCountingDown) {
-        break;
-      }
     }
   }
 

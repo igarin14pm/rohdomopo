@@ -15,7 +15,11 @@ async function startTests() {
 
   // -------- テストを開始したことを示すメッセージ --------
 
-  console.info('-------- Test run started... 🫡 --------');
+  console.info(
+    '----------------------------\n' +
+    'Test run started... 🫡\n' +
+    '----------------------------'
+  );
 
   // -------- html --------
 
@@ -73,7 +77,7 @@ async function startTests() {
 
   // `RohdomopoApp`
 
-  await test('`RohdomopoApp.constructor()`', () => {
+  await test('`RohdomopoApp.constructor()` - メンバを初期化する', () => {
     const body = document.body;
     const soundDialogElement = htmlContainer.querySelector('#sound-dialog');
     const stateHeadingElement = htmlContainer.querySelector('#state-heading');
@@ -103,7 +107,7 @@ async function startTests() {
     expect(rohdomopoApp.rohdomopoTimer.heavenTimer.duration_cs).toBe(54 * 60 * 100 + 32 * 100 + 10);
   });
 
-  await test('`RohdomopoApp.constructor()` - デフォルト値', () => {
+  await test('`RohdomopoApp.constructor()` - 一部の引数を省略した時にデフォルト値が適用される', () => {
     const body = document.body;
     const soundDialogElement = htmlContainer.querySelector('#sound-dialog');
     const stateHeadingElement = htmlContainer.querySelector('#state-heading');
@@ -126,7 +130,7 @@ async function startTests() {
   });
 
   await test(
-    '`RohdomopoApp.onCountingDown()` - 残り時間が1分以上の時に呼び出されても `timerDisplayElement` に `one-minute-left` クラスを付与しない', 
+    '`RohdomopoApp.onCountingDown()` - 残り時間が1分以上の時に呼び出しても `timerDisplayElement` に `one-minute-left` クラスを付与しない', 
     () => {
       const body = document.body;
       const soundDialogElement = htmlContainer.querySelector('#sound-dialog');
@@ -154,7 +158,36 @@ async function startTests() {
   );
 
   await test(
-    '`RohdomopoApp.onCountingDown()` - 残り時間が1分を下回ると `timerDisplayElement` に `one-minute-left` クラスが付与される', 
+    '`RohdomopoApp.onCountingDown()` - 残り時間が1分未満の時に呼び出しても `timerDisplayElement` から `one-minute-left` クラスを削除しない', 
+    () => {
+      const body = document.body;
+      const soundDialogElement = htmlContainer.querySelector('#sound-dialog');
+      const stateHeadingElement = htmlContainer.querySelector('#state-heading');
+      const stateMessageElement = htmlContainer.querySelector('#state-message');
+      const timerDisplayElement = htmlContainer.querySelector('#timer-display');
+      const startPauseButtonElement = htmlContainer.querySelector('#start-pause-button');
+      const rohdomopoApp = new App.RohdomopoApp(
+        body,
+        soundDialogElement,
+        stateHeadingElement,
+        stateMessageElement,
+        timerDisplayElement,
+        startPauseButtonElement,
+        audioEngine,
+        45 * 1000,
+        25 * 60 * 1000
+      );
+
+      timerDisplayElement.classList.add('one-minute-left');
+      rohdomopoApp.rohdomopoTimer.switchState('hell');
+      rohdomopoApp.onCountingDown();
+
+      expect(timerDisplayElement.classList.contains('one-minute-left')).toBe(true);
+    }
+  );
+
+  await test(
+    '`RohdomopoApp.onCountingDown()` - タイマーが残り時間が1分を下回ると `timerDisplayElement` に `one-minute-left` クラスが付与される', 
     () => {
       const body = document.body;
       const soundDialogElement = htmlContainer.querySelector('#sound-dialog');
@@ -182,7 +215,7 @@ async function startTests() {
   );
 
   await test(
-    '`RohdomopoApp.onCountingDown()` - \"五分間の徒労\" から \"二十五分間の徒労\" に移行すると `timerDisplayElement` から `one-minute-left` クラスが削除される', 
+    '`RohdomopoApp.onCountingDown()` - \"二十五分間の徒労\" 状態のタイマーが1分以上に設定されているとき、 \"五分間の徒労\" から \"二十五分間の徒労\" に移行すると `timerDisplayElement` から `one-minute-left` クラスが削除される', 
     async () => {
       const body = document.body;
       const soundDialogElement = htmlContainer.querySelector('#sound-dialog');
@@ -213,7 +246,7 @@ async function startTests() {
   );
 
     await test(
-    '`RohdomopoApp.onCountingDown()` - \"二十五分間の徒労\" から \"五分間の徒労\" に移行すると `timerDisplayElement` から `one-minute-left` クラスが削除される', 
+    '`RohdomopoApp.onCountingDown()` - \"五分間の徒労\" タイマーが1分以上に設定されているとき、 \"二十五分間の徒労\" から \"五分間の徒労\" に移行すると `timerDisplayElement` から `one-minute-left` クラスが削除される', 
     async () => {
       const body = document.body;
       const soundDialogElement = htmlContainer.querySelector('#sound-dialog');
@@ -243,7 +276,7 @@ async function startTests() {
     }
   );
 
-  await test('`RohdomopoApp.onStateChanged()` - \"五分間の徒労\" 状態に変化時に `<body>` の class が `hell` になる', () => {
+  await test('`RohdomopoApp.onStateChanged()` - \"五分間の徒労\" 状態に変化する時に `<body>` の class が `hell` になる', () => {
     const body = document.body;
     const soundDialogElement = htmlContainer.querySelector('#sound-dialog');
     const stateHeadingElement = htmlContainer.querySelector('#state-heading');
@@ -266,7 +299,7 @@ async function startTests() {
     expect(body.classList.contains('heaven')).toBe(false);
   });
 
-  await test('`RohdomopoApp.onStateChanged()` - \"五分間の徒労\" 状態に変化時にテキストが変化する', () => {
+  await test('`RohdomopoApp.onStateChanged()` - \"五分間の徒労\" 状態に変化する時にテキストが変化する', () => {
     const body = document.body;
     const soundDialogElement = htmlContainer.querySelector('#sound-dialog');
     const stateHeadingElement = htmlContainer.querySelector('#state-heading');
@@ -289,7 +322,7 @@ async function startTests() {
     expect(stateMessageElement.textContent).toBe('問うな。理由を求める時間は終わった。ただキーボードを叩け。');
   });
 
-  await test('`RohdomopoApp.onStateChanged()` - \"二十五分間の解放\" 状態に変化時に `<body>` の class が `heaven` になる', () => {
+  await test('`RohdomopoApp.onStateChanged()` - \"二十五分間の解放\" 状態に変化する時に `<body>` の class が `heaven` になる', () => {
     const body = document.body;
     const soundDialogElement = htmlContainer.querySelector('#sound-dialog');
     const stateHeadingElement = htmlContainer.querySelector('#state-heading');
@@ -312,7 +345,7 @@ async function startTests() {
     expect(body.classList.contains('heaven')).toBe(true);
   });
 
-  await test('`RohdomopoApp.onStateChanged()` - \"二十五分間の解放\" 状態に変化時にテキストが変化する', async () => {
+  await test('`RohdomopoApp.onStateChanged()` - \"二十五分間の解放\" 状態に変化する時にテキストが変化する', async () => {
     const body = document.body;
     const soundDialogElement = htmlContainer.querySelector('#sound-dialog');
     const stateHeadingElement = htmlContainer.querySelector('#state-heading');
@@ -335,7 +368,7 @@ async function startTests() {
     expect(stateMessageElement.textContent).toBe('見上げよ。世界は彩りに満ちている。思考の翼を広げ、どこへでも飛んでゆけ。');
   });
 
-  await test('`RohdomopoApp.requestUpdatingTimerDisplay()` - `requestAnimationId` に値が代入される', () => {
+  await test('`RohdomopoApp.requestUpdatingTimerDisplay()` - 呼び出した時に `requestAnimationId` に number 値が代入される', () => {
     const body = document.body;
     const soundDialogElement = htmlContainer.querySelector('#sound-dialog');
     const stateHeadingElement = htmlContainer.querySelector('#state-heading');
@@ -361,7 +394,7 @@ async function startTests() {
     expect(requestAnimationId2).toBeTypeOf('number');
   });
 
-  await test('`RohdomopoApp.cancelUpdatingTimerDisplay()` - `requestAnimationId` に `null` が代入される', () => {
+  await test('`RohdomopoApp.cancelUpdatingTimerDisplay()` - 呼び出した時に `requestAnimationId` に `null` が代入される', () => {
     const body = document.body;
     const soundDialogElement = htmlContainer.querySelector('#sound-dialog');
     const stateHeadingElement = htmlContainer.querySelector('#state-heading');
@@ -384,7 +417,7 @@ async function startTests() {
     expect(rohdomopoApp.requestAnimationId).toBe(null);
   });
 
-  await test('`RohdomopoApp.onClickStartPauseButton()` - タイマー開始時', async () => {
+  await test('`RohdomopoApp.onClickStartPauseButton()` - タイマー停止時にメソッドを呼び出すとタイマーが開始される', async () => {
     const body = document.body;
     const soundDialogElement = htmlContainer.querySelector('#sound-dialog');
     const stateHeadingElement = htmlContainer.querySelector('#state-heading');
@@ -404,14 +437,37 @@ async function startTests() {
     rohdomopoApp.onClickStartPauseButton();
     await TimersPromises.setTimeout(10);
     const isCountingDown = rohdomopoApp.rohdomopoTimer.isCountingDown;
-    const textContent = rohdomopoApp.startPauseButtonElement.textContent;
     rohdomopoApp.rohdomopoTimer.pause();
 
     expect(isCountingDown).toBe(true);
+  });
+
+  await test('`RohdomopoApp.onClickStartPauseButton()` - タイマー停止時にメソッドを呼び出すと `startPauseButtonElement` のテキストが \"カウントダウンを一時停止\" になる', async () => {
+    const body = document.body;
+    const soundDialogElement = htmlContainer.querySelector('#sound-dialog');
+    const stateHeadingElement = htmlContainer.querySelector('#state-heading');
+    const stateMessageElement = htmlContainer.querySelector('#state-message');
+    const timerDisplayElement = htmlContainer.querySelector('#timer-display');
+    const startPauseButtonElement = htmlContainer.querySelector('#start-pause-button');
+    const rohdomopoApp = new App.RohdomopoApp(
+      body,
+      soundDialogElement,
+      stateHeadingElement,
+      stateMessageElement,
+      timerDisplayElement,
+      startPauseButtonElement,
+      audioEngine
+    );
+
+    rohdomopoApp.onClickStartPauseButton();
+    await TimersPromises.setTimeout(10);
+    const textContent = rohdomopoApp.startPauseButtonElement.textContent;
+    rohdomopoApp.rohdomopoTimer.pause();
+
     expect(textContent).toBe('カウントダウンを一時停止');
   });
 
-  await test('`RohdomopoApp.onClickStartPauseButton()` - タイマー一時停止時', async () => {
+  await test('`RohdomopoApp.onClickStartPauseButton()` - タイマー稼働中にメソッドを呼び出すとタイマーが一時停止する', async () => {
     const body = document.body;
     const soundDialogElement = htmlContainer.querySelector('#sound-dialog');
     const stateHeadingElement = htmlContainer.querySelector('#state-heading');
@@ -433,10 +489,57 @@ async function startTests() {
     rohdomopoApp.onClickStartPauseButton();
 
     expect(rohdomopoApp.rohdomopoTimer.isCountingDown).toBe(false);
+  });
+
+  await test('`RohdomopoApp.onClickStartPauseButton()` - タイマー稼働中にメソッドを呼び出すと `startPauseButtonElement` のテキストが \"カウントダウンを再開\" になる', async () => {
+    const body = document.body;
+    const soundDialogElement = htmlContainer.querySelector('#sound-dialog');
+    const stateHeadingElement = htmlContainer.querySelector('#state-heading');
+    const stateMessageElement = htmlContainer.querySelector('#state-message');
+    const timerDisplayElement = htmlContainer.querySelector('#timer-display');
+    const startPauseButtonElement = htmlContainer.querySelector('#start-pause-button');
+    const rohdomopoApp = new App.RohdomopoApp(
+      body,
+      soundDialogElement,
+      stateHeadingElement,
+      stateMessageElement,
+      timerDisplayElement,
+      startPauseButtonElement,
+      audioEngine
+    );
+
+    rohdomopoApp.onClickStartPauseButton();
+    await TimersPromises.setTimeout(10);
+    rohdomopoApp.onClickStartPauseButton();
+
     expect(rohdomopoApp.startPauseButtonElement.textContent).toBe('カウントダウンを再開');
   });
 
-  await test('`RohdomopoApp.enableStartPauseButton()`', () => {
+  await test('`RohdomopoApp.onClickStartPauseButton()` - タイマーを一時停止した時に `timerDisplayElement.textContent` と `rohdomopoTimer.textContent` で誤差が生じない', async () => {
+    const body = document.body;
+    const soundDialogElement = htmlContainer.querySelector('#sound-dialog');
+    const stateHeadingElement = htmlContainer.querySelector('#state-heading');
+    const stateMessageElement = htmlContainer.querySelector('#state-message');
+    const timerDisplayElement = htmlContainer.querySelector('#timer-display');
+    const startPauseButtonElement = htmlContainer.querySelector('#start-pause-button');
+    const rohdomopoApp = new App.RohdomopoApp(
+      body,
+      soundDialogElement,
+      stateHeadingElement,
+      stateMessageElement,
+      timerDisplayElement,
+      startPauseButtonElement,
+      audioEngine
+    );
+
+    rohdomopoApp.onClickStartPauseButton();
+    await TimersPromises.setTimeout(150);
+    rohdomopoApp.onClickStartPauseButton();
+
+    expect(timerDisplayElement.textContent).toBe(rohdomopoApp.rohdomopoTimer.textContent);
+  });
+
+  await test('`RohdomopoApp.enableStartPauseButton()` - 呼び出した時に `startPauseButtonElement` の class から `.loading` が削除される', () => {
     const body = document.body;
     const soundDialogElement = htmlContainer.querySelector('#sound-dialog');
     const stateHeadingElement = htmlContainer.querySelector('#state-heading');
@@ -456,6 +559,27 @@ async function startTests() {
     rohdomopoApp.enableStartPauseButton();
 
     expect(rohdomopoApp.startPauseButtonElement.classList.contains('loading')).toBe(false);
+  });
+
+  await test('`RohdomopoApp.enableStartPauseButton()` - 呼び出した時に `startPauseButtonElement` のテキストが \"カウントダウンを開始\" になる', () => {
+    const body = document.body;
+    const soundDialogElement = htmlContainer.querySelector('#sound-dialog');
+    const stateHeadingElement = htmlContainer.querySelector('#state-heading');
+    const stateMessageElement = htmlContainer.querySelector('#state-message');
+    const timerDisplayElement = htmlContainer.querySelector('#timer-display');
+    const startPauseButtonElement = htmlContainer.querySelector('#start-pause-button');
+    const rohdomopoApp = new App.RohdomopoApp(
+      body,
+      soundDialogElement,
+      stateHeadingElement,
+      stateMessageElement,
+      timerDisplayElement,
+      startPauseButtonElement,
+      audioEngine
+    );
+
+    rohdomopoApp.enableStartPauseButton();
+
     expect(rohdomopoApp.startPauseButtonElement.textContent).toBe('カウントダウンを開始');
   });
 
@@ -463,7 +587,7 @@ async function startTests() {
 
   // `CountDownTimer`
 
-  await test('`CountDownTimer.constructor()`', () => {
+  await test('`CountDownTimer.constructor() - メンバが初期化される`', () => {
     const onCountingDown1 = () => { 
       console.log('`onCountingDown()` called'); 
     };
@@ -485,30 +609,68 @@ async function startTests() {
     expect(countDownTimer2.onCountingSeconds).toBe(onCountingSeconds2);
   });
 
-  await test('`CountDonwTimer.isFinished`', async () => {
+  await test('`CountDownTimer.isFinished` - タイマー稼働前に `false` を返す', () => {
     const countDownTimer1 = new RohdomopoTimer.CountDownTimer(100, () => { }, () => { });
     const countDownTimer2 = new RohdomopoTimer.CountDownTimer(200, () => { }, () => { });
 
-    const isFinished1_1 = countDownTimer1.isFinished;
-    const isFinished2_1 = countDownTimer2.isFinished;
+    const isFinished1 = countDownTimer1.isFinished;
+    const isFinished2 = countDownTimer2.isFinished;
+
+    expect(isFinished1).toBe(false);
+    expect(isFinished2).toBe(false);
+  });
+
+  await test('`CountDownTimer.isFinished` - タイマー稼働中は `false` を返す', async () => {
+    const countDownTimer1 = new RohdomopoTimer.CountDownTimer(100, () => { }, () => { });
+    const countDownTimer2 = new RohdomopoTimer.CountDownTimer(200, () => { }, () => { });
+
+    countDownTimer1.start();
+    countDownTimer2.start();
+    await TimersPromises.setTimeout(10);
+    const isFinished1 = countDownTimer1.isFinished;
+    const isFinished2 = countDownTimer2.isFinished;
+    countDownTimer1.pause();
+    countDownTimer2.pause();
+
+    expect(isFinished1).toBe(false);
+    expect(isFinished2).toBe(false);
+  });
+
+  await test('`CountDownTimer.isFinished` - タイマー一時停止中でも残り時間が 0 でなければ `false` を返す', async () => {
+    const countDownTimer1 = new RohdomopoTimer.CountDownTimer(100, () => { }, () => { });
+    const countDownTimer2 = new RohdomopoTimer.CountDownTimer(200, () => { }, () => { });
+
     countDownTimer1.start();
     countDownTimer2.start();
     await TimersPromises.setTimeout(50);
-    const isFinished1_2 = countDownTimer1.isFinished;
-    const isFinished2_2 = countDownTimer2.isFinished;
-    await TimersPromises.setTimeout(200);
-    const isFinished1_3 = countDownTimer1.isFinished;
-    const isFinished2_3 = countDownTimer2.isFinished;
+    countDownTimer1.pause();
+    countDownTimer2.pause();
+    const isFinished1 = countDownTimer1.isFinished;
+    const isFinished2 = countDownTimer2.isFinished;
 
-    expect(isFinished1_1).toBe(false);
-    expect(isFinished1_2).toBe(false);
-    expect(isFinished1_3).toBe(true);
-    expect(isFinished2_1).toBe(false);
-    expect(isFinished2_2).toBe(false);
-    expect(isFinished2_3).toBe(true);
-  })
+    expect(countDownTimer1.currentTime_cs).toBeGreaterThan(0);
+    expect(countDownTimer2.currentTime_cs).toBeGreaterThan(0);
+    expect(isFinished1).toBe(false);
+    expect(isFinished2).toBe(false);
+  });
 
-  await test('`CountDownTimer.textContent`', () => {
+  await test('`CountDownTimer.isFinished` - タイマーが終了しているときに `true` を返す', async () => {
+    const countDownTimer1 = new RohdomopoTimer.CountDownTimer(100, () => { }, () => { });
+    const countDownTimer2 = new RohdomopoTimer.CountDownTimer(200, () => { }, () => { });
+
+    countDownTimer1.start();
+    countDownTimer2.start();
+    await TimersPromises.setTimeout(250);
+    const isFinished1 = countDownTimer1.isFinished;
+    const isFinished2 = countDownTimer2.isFinished;
+
+    expect(countDownTimer1.currentTime_cs).toBe(0);
+    expect(countDownTimer2.currentTime_cs).toBe(0);
+    expect(isFinished1).toBe(true);
+    expect(isFinished2).toBe(true);
+  });
+
+  await test('`CountDownTimer.textContent` - UI 表示用にフォーマットされた残り時間を返す', () => {
     const countDownTimer1 = new RohdomopoTimer.CountDownTimer(30000, () => { }, () => { });
     const countDownTimer2 = new RohdomopoTimer.CountDownTimer(12 * 60 * 1000 + 34 * 1000 + 560, () => { }, () => { });
 
@@ -533,7 +695,7 @@ async function startTests() {
     expect(isOnCountingDownCalled).toBe(true);
   });
 
-  await test('`CountDownTimer.setDuration()`', async () => {
+  await test('`CountDownTimer.setDuration()` - `duration_cs` が引数の 1/10 の値 (小数点切り捨て) に設定される', async () => {
     const countDownTimer1 = new RohdomopoTimer.CountDownTimer(5 * 60 * 1000, () => { }, () => { });
     const countDownTimer2 = new RohdomopoTimer.CountDownTimer(10000, () => { }, () => { });
     countDownTimer2.start();
@@ -541,11 +703,23 @@ async function startTests() {
     countDownTimer2.pause();
 
     countDownTimer1.setDuration(25 * 60 * 1000);
-    countDownTimer2.setDuration(20000);
+    countDownTimer2.setDuration(20001);
 
     expect(countDownTimer1.duration_cs).toBe(25 * 60 * 100);
-    expect(countDownTimer1.currentTime_cs).toBe(25 * 60 * 100);
     expect(countDownTimer2.duration_cs).toBe(2000);
+  });
+
+  await test('`CountDownTimer.setDuration()` - `currentTime_cs` が引数の 1/10 の値 (小数点切り捨て) に設定される', async () => {
+    const countDownTimer1 = new RohdomopoTimer.CountDownTimer(5 * 60 * 1000, () => { }, () => { });
+    const countDownTimer2 = new RohdomopoTimer.CountDownTimer(10000, () => { }, () => { });
+    countDownTimer2.start();
+    await TimersPromises.setTimeout(100);
+    countDownTimer2.pause();
+
+    countDownTimer1.setDuration(25 * 60 * 1000);
+    countDownTimer2.setDuration(20001);
+
+    expect(countDownTimer1.currentTime_cs).toBe(25 * 60 * 100);
     expect(countDownTimer2.currentTime_cs).toBe(2000);
   });
 
@@ -556,7 +730,7 @@ async function startTests() {
     countDownTimer1.start();
     await TimersPromises.setTimeout(100);
     countDownTimer1.pause();
-    
+
     countDownTimer2.start();
     await TimersPromises.setTimeout(100);
     countDownTimer2.pause()
@@ -628,7 +802,7 @@ async function startTests() {
     expect(isOnCountingSecondsCalled).toBe(false);
   });
 
-  await test('`CountDownTimer.pause()`', async () => {
+  await test('`CountDownTimer.pause()` - 呼び出した後にタイマーが停止する', async () => {
     const countDownTimer1 = new RohdomopoTimer.CountDownTimer(30000, () => { }, () => { });
     const countDownTimer2 = new RohdomopoTimer.CountDownTimer(12 * 60 * 1000 + 34 * 1000 + 560, () => { }, () => { });
 
@@ -638,17 +812,37 @@ async function startTests() {
     countDownTimer1.pause();
     countDownTimer2.pause();
     await TimersPromises.setTimeout(10);
-    const currentTime1_1 = countDownTimer1.currentTime_cs;
-    const currentTime2_1 = countDownTimer2.currentTime_cs;
+    const currentTime1_1_cs = countDownTimer1.currentTime_cs;
+    const currentTime2_1_cs = countDownTimer2.currentTime_cs;
     await TimersPromises.setTimeout(100);
-    const currentTime1_2 = countDownTimer1.currentTime_cs;
-    const currentTime2_2 = countDownTimer2.currentTime_cs;
+    const currentTime1_2_cs = countDownTimer1.currentTime_cs;
+    const currentTime2_2_cs = countDownTimer2.currentTime_cs;
 
-    expect(currentTime1_1).toBe(currentTime1_2);
-    expect(currentTime2_1).toBe(currentTime2_2);
+    expect(currentTime1_1_cs).toBe(currentTime1_2_cs);
+    expect(currentTime2_1_cs).toBe(currentTime2_2_cs);
   });
 
-  await test('`CountDownTimer.reset()`', async () => {
+  await test('`CountDownTimer.reset()` - 呼び出した後にタイマーが停止する', async () => {
+    const countDownTimer1 = new RohdomopoTimer.CountDownTimer(30000, () => { }, () => { });
+    const countDownTimer2 = new RohdomopoTimer.CountDownTimer(12 * 60 * 1000 + 34 * 1000 + 560, () => { }, () => { });
+    countDownTimer1.start();
+    countDownTimer2.start();
+    await TimersPromises.setTimeout(100);
+
+    countDownTimer1.reset();
+    countDownTimer2.reset();
+    await TimersPromises.setTimeout(10);
+    const currentTime1_1_cs = countDownTimer1.currentTime_cs;
+    const currentTime2_1_cs = countDownTimer2.currentTime_cs;
+    await TimersPromises.setTimeout(100);
+    const currentTime1_2_cs = countDownTimer1.currentTime_cs;
+    const currentTime2_2_cs = countDownTimer2.currentTime_cs;
+
+    expect(currentTime1_1_cs).toBe(currentTime1_2_cs);
+    expect(currentTime2_1_cs).toBe(currentTime2_2_cs);
+  });
+
+  await test('`CountDownTimer.reset()` - 呼び出した時に時間がリセットされる', async () => {
     const countDownTimer1 = new RohdomopoTimer.CountDownTimer(30000, () => { }, () => { });
     const countDownTimer2 = new RohdomopoTimer.CountDownTimer(12 * 60 * 1000 + 34 * 1000 + 560, () => { }, () => { });
     countDownTimer1.start();
@@ -670,7 +864,7 @@ async function startTests() {
 
   // `RohdomopoTimer`
 
-  await test('`RohdomopoTimer.constructor()`', () => {
+  await test('`RohdomopoTimer.constructor()` - メンバが初期化される', () => {
     const onCountingDown = () => {
       console.log('`onCountingDown()` called');
     };
@@ -698,47 +892,54 @@ async function startTests() {
     expect(rohdomopoTimer.onStateChanged).toBe(onStateChanged);
   });
 
-  await test('`RohdomopoTimer.isCountingDown`', async () => {
+  await test('`RohdomopoTimer.isCountingDown` - タイマー開始前に `false` を返す', async () => {
     const rohdomopoTimer = new RohdomopoTimer.RohdomopoTimer(
-      5 * 60 * 1000, 25 * 60 * 1000, 
+      5 * 60 * 1000, 
+      25 * 60 * 1000, 
       () => { },
       () => { },
       () => { }
     );
-    
-    const valueBeforeStarting = rohdomopoTimer.isCountingDown;
-    rohdomopoTimer.start();
-    await TimersPromises.setTimeout(10);
-    const valueAfterStarting = rohdomopoTimer.isCountingDown;
-    rohdomopoTimer.pause();
-    await TimersPromises.setTimeout(10);
-    const valueAfterPausing = rohdomopoTimer.isCountingDown;
 
-    expect(valueBeforeStarting).toBe(false);
-    expect(valueAfterStarting).toBe(true);
-    expect(valueAfterPausing).toBe(false);
+    const isCountingDown = rohdomopoTimer.isCountingDown;
+
+    expect(isCountingDown).toBe(false);
   });
 
-  await test('`RohdomopoTimer.state` - getter', async () => {
-    const rohdomopoTimer = new RohdomopoTimer.RohdomopoTimer(200, 200, () => { }, () => { }, () => { });
+  await test('`RohdomopoTimer.isCountingDown` - タイマー稼働中に `true` を返す', async () => {
+    const rohdomopoTimer = new RohdomopoTimer.RohdomopoTimer(
+      5 * 60 * 1000, 
+      25 * 60 * 1000, 
+      () => { },
+      () => { },
+      () => { }
+    );
 
-    const state1 = rohdomopoTimer.state;
     rohdomopoTimer.start();
-    await TimersPromises.setTimeout(100);
-    const state2 = rohdomopoTimer.state;
-    await TimersPromises.setTimeout(200);
-    const state3 = rohdomopoTimer.state;
-    await TimersPromises.setTimeout(200);
-    const state4 = rohdomopoTimer.state;
-    rohdomopoTimer.pause();
+    const isCountingDown = rohdomopoTimer.isCountingDown;
 
-    expect(state1).toBe('normal');
-    expect(state2).toBe('hell');
-    expect(state3).toBe('heaven');
-    expect(state4).toBe('hell');
+    expect(isCountingDown).toBe(true);
   });
 
-  await test('`RohdomopoTimer.currentTime_cs` - `RohdomopoTimer.state` が `\'hell\'` のときに `RohdomopoTimer.hellTimer.currentTime.cs` の値が返される', () => {
+  await test('`RohdomopoTimer.isCountingDown` - タイマー一時停止中に `false` を返す', async () => {
+    const rohdomopoTimer = new RohdomopoTimer.RohdomopoTimer(
+      5 * 60 * 1000, 
+      25 * 60 * 1000, 
+      () => { },
+      () => { },
+      () => { }
+    );
+
+    rohdomopoTimer.start();
+    await TimersPromises.setTimeout(10);
+    rohdomopoTimer.pause();
+    await TimersPromises.setTimeout(10);
+    const isCountingDown = rohdomopoTimer.isCountingDown;
+
+    expect(isCountingDown).toBe(false);
+  });
+
+  await test('`RohdomopoTimer.currentTime_cs` - `RohdomopoTimer.state` が `\'hell\'` のときに `RohdomopoTimer.hellTimer.currentTime_cs` の値が返される', () => {
     const rohdomopoTimer1 = new RohdomopoTimer.RohdomopoTimer(
       5 * 60 * 1000, 
       25 * 60 * 1000, 
@@ -753,7 +954,7 @@ async function startTests() {
     expect(currenTime_cs).toBe(5 * 60 * 100);
   });
 
-  await test('`RohdomopoTimer.currentTime_cs` - `RohdomopoTimer.state` が `\'heaven\'` のときに `RohdomopoTimer.heavenTimer.currentTime.cs` の値が返される', () => {
+  await test('`RohdomopoTimer.currentTime_cs` - `RohdomopoTimer.state` が `\'heaven\'` のときに `RohdomopoTimer.heavenTimer.currentTime_cs` の値が返される', () => {
     const rohdomopoTimer1 = new RohdomopoTimer.RohdomopoTimer(
       5 * 60 * 1000, 
       25 * 60 * 1000, 
@@ -768,7 +969,7 @@ async function startTests() {
     expect(currenTime_cs).toBe(25 * 60 * 100);
   });
 
-  await test('`RohdomopoTimer.textContent` - \"五分間の徒労\" 状態時', () => {
+  await test('`RohdomopoTimer.textContent` - \"五分間の徒労\" 状態時に `hellTimer` の UI 表示用文字列が返される', () => {
     const rohdomopoTimer1 = new RohdomopoTimer.RohdomopoTimer(
       5 * 60 * 1000, 
       25 * 60 * 1000, 
@@ -793,7 +994,7 @@ async function startTests() {
     expect(textContent2).toBe('12:34.56');
   });
 
-  await test('`RohdomopoTimer.textContent` - \"二十五分間の解放\" 状態時', () => {
+  await test('`RohdomopoTimer.textContent` - \"二十五分間の解放\" 状態時に `heavenTimer` の UI 表示用文字列が返される', () => {
     const rohdomopoTimer1 = new RohdomopoTimer.RohdomopoTimer(
       5 * 60 * 1000, 
       25 * 60 * 1000, 
@@ -818,7 +1019,7 @@ async function startTests() {
     expect(textContent2).toBe('54:32.10');
   })
 
-  await test('`RohdomopoTimer.textContent` - タイマー開始前', () => {
+  await test('`RohdomopoTimer.textContent` - タイマー開始前は `hellTimer` の UI 表示用文字列を返す', () => {
     const rohdomopoTimer1 = new RohdomopoTimer.RohdomopoTimer(
       5 * 60 * 1000, 
       25 * 60 * 1000, 
@@ -979,7 +1180,8 @@ async function startTests() {
 
   await test('`RohdomopoTimer.start()` - 初回呼び出し時に `state` に `\'hell\'` が代入される', () => {
     const rohdomopoTimer = new RohdomopoTimer.RohdomopoTimer(
-      5 * 60 * 1000, 25 * 60 * 1000, 
+      5 * 60 * 1000, 
+      25 * 60 * 1000, 
       () => { },
       () => { },
       () => { }
@@ -994,21 +1196,23 @@ async function startTests() {
     expect(state2).toBe('hell')
   });
 
-  await test('`RohdomopoTimer.start()` - `state` に合わせたタイマーが開始される', async () => {
+  await test('`RohdomopoTimer.start()` - \"五分間の徒労\" 状態時に `hellTimer` が開始される', async () => {
     const rohdomopoTimer1 = new RohdomopoTimer.RohdomopoTimer(
-      5 * 60 * 1000, 25 * 60 * 1000, 
+      5 * 60 * 1000, 
+      25 * 60 * 1000, 
       () => { },
       () => { },
       () => { }
     );
     const rohdomopoTimer2 = new RohdomopoTimer.RohdomopoTimer(
-      5 * 60 * 1000, 25 * 60 * 1000, 
+      5 * 1000, 
+      25 * 1000, 
       () => { },
       () => { },
       () => { }
     );
     rohdomopoTimer1.switchState('hell');
-    rohdomopoTimer2.switchState('heaven');
+    rohdomopoTimer2.switchState('hell');
 
     rohdomopoTimer1.start();
     rohdomopoTimer2.start();
@@ -1018,85 +1222,276 @@ async function startTests() {
 
     expect(rohdomopoTimer1.hellTimer.currentTime_cs).toBeLessThan(5 * 60 * 100);
     expect(rohdomopoTimer1.heavenTimer.currentTime_cs).toBe(25 * 60 * 100);
-    expect(rohdomopoTimer2.hellTimer.currentTime_cs).toBe(5 * 60 * 100);
-    expect(rohdomopoTimer2.heavenTimer.currentTime_cs).toBeLessThan(25 * 60 * 1000);
+    expect(rohdomopoTimer2.hellTimer.currentTime_cs).toBeLessThan(5 * 100);
+    expect(rohdomopoTimer2.heavenTimer.currentTime_cs).toBe(25 * 100);
   });
 
-  await test('`RohdomopoTimer.start()` - タイマー終了時に自動的にリセットされる', async () => {
+  await test('`RohdomopoTimer.start()` - \"二十五分間の解放\" 状態時に `heavenTimer` が開始される', async () => {
     const rohdomopoTimer1 = new RohdomopoTimer.RohdomopoTimer(
-      100, 25 * 60 * 1000, 
+      5 * 60 * 1000, 
+      25 * 60 * 1000, 
       () => { },
       () => { },
       () => { }
     );
     const rohdomopoTimer2 = new RohdomopoTimer.RohdomopoTimer(
-      5 * 60 * 1000, 100, 
+      5 * 1000, 
+      25 * 1000, 
+      () => { },
+      () => { },
+      () => { }
+    );
+    rohdomopoTimer1.switchState('heaven');
+    rohdomopoTimer2.switchState('heaven');
+
+    rohdomopoTimer1.start();
+    rohdomopoTimer2.start();
+    await TimersPromises.setTimeout(100);
+    rohdomopoTimer1.pause();
+    rohdomopoTimer2.pause();
+
+    expect(rohdomopoTimer1.hellTimer.currentTime_cs).toBe(5 * 60 * 100);
+    expect(rohdomopoTimer1.heavenTimer.currentTime_cs).toBeLessThan(25 * 60 * 100);
+    expect(rohdomopoTimer2.hellTimer.currentTime_cs).toBe(5 * 100);
+    expect(rohdomopoTimer2.heavenTimer.currentTime_cs).toBeLessThan(25 * 100);
+  });
+
+  await test('`RohdomopoTimer.start()` - `hellTimer` 終了時に自動的に `hellTimer` がリセットされる', async () => {
+    const rohdomopoTimer1 = new RohdomopoTimer.RohdomopoTimer(
+      100, 
+      25 * 60 * 1000, 
+      () => { },
+      () => { },
+      () => { }
+    );
+    const rohdomopoTimer2 = new RohdomopoTimer.RohdomopoTimer(
+      200, 
+      25 * 1000, 
       () => { }, 
       () => { },
       () => { }
     );
     rohdomopoTimer1.switchState('hell');
-    rohdomopoTimer2.switchState('heaven');
+    rohdomopoTimer2.switchState('hell');
 
     rohdomopoTimer1.start();
     rohdomopoTimer2.start();
     await TimersPromises.setTimeout(50);
     const value1BeforeStateChanged = rohdomopoTimer1.hellTimer.currentTime_cs;
-    const value2BeforeStateChanged = rohdomopoTimer2.heavenTimer.currentTime_cs;
-    await TimersPromises.setTimeout(100);
+    const value2BeforeStateChanged = rohdomopoTimer2.hellTimer.currentTime_cs;
+    await TimersPromises.setTimeout(200);
     const value1AfterStateChanged = rohdomopoTimer1.hellTimer.currentTime_cs;
+    const value2AfterStateChanged = rohdomopoTimer2.hellTimer.currentTime_cs;
+    rohdomopoTimer1.pause();
+    rohdomopoTimer2.pause();
+
+    expect(value1BeforeStateChanged).toBeLessThan(10);
+    expect(value1AfterStateChanged).toBe(10);
+    expect(value2BeforeStateChanged).toBeLessThan(20);
+    expect(value2AfterStateChanged).toBe(20);
+  });
+
+  await test('`RohdomopoTimer.start()` - `heavenTimer` 終了時に自動的に `heavenTimer` がリセットされる', async () => {
+    const rohdomopoTimer1 = new RohdomopoTimer.RohdomopoTimer(
+      25 * 60 * 1000, 
+      100,
+      () => { },
+      () => { },
+      () => { }
+    );
+    const rohdomopoTimer2 = new RohdomopoTimer.RohdomopoTimer(
+      25 * 1000, 
+      200,
+      () => { }, 
+      () => { },
+      () => { }
+    );
+    rohdomopoTimer1.switchState('heaven');
+    rohdomopoTimer2.switchState('heaven');
+
+    rohdomopoTimer1.start();
+    rohdomopoTimer2.start();
+    await TimersPromises.setTimeout(50);
+    const value1BeforeStateChanged = rohdomopoTimer1.heavenTimer.currentTime_cs;
+    const value2BeforeStateChanged = rohdomopoTimer2.heavenTimer.currentTime_cs;
+    await TimersPromises.setTimeout(200);
+    const value1AfterStateChanged = rohdomopoTimer1.heavenTimer.currentTime_cs;
     const value2AfterStateChanged = rohdomopoTimer2.heavenTimer.currentTime_cs;
     rohdomopoTimer1.pause();
     rohdomopoTimer2.pause();
 
     expect(value1BeforeStateChanged).toBeLessThan(10);
     expect(value1AfterStateChanged).toBe(10);
-    expect(value2BeforeStateChanged).toBeLessThan(10);
-    expect(value2AfterStateChanged).toBe(10);
+    expect(value2BeforeStateChanged).toBeLessThan(20);
+    expect(value2AfterStateChanged).toBe(20);
   });
 
-  await test('`RohdomopoTimer.start()` - タイマー終了時に自動的に `state` が切り替わる', async () => {
+  await test('`RohdomopoTimer.start()` - `hellTimer` 終了時に自動的に `state` が `\'heaven\' に切り替わる`', async () => {
     const rohdomopoTimer1 = new RohdomopoTimer.RohdomopoTimer(
-      100, 25 * 60 * 1000, 
+      100, 
+      25 * 60 * 1000, 
       () => { }, 
       () => { },
       () => { }
     );
     const rohdomopoTimer2 = new RohdomopoTimer.RohdomopoTimer(
-      5 * 60 * 1000, 100, 
+      200, 
+      25 * 1000,
       () => { },
       () => { },
       () => { }
     );
     rohdomopoTimer1.switchState('hell');
-    rohdomopoTimer2.switchState('heaven');
+    rohdomopoTimer2.switchState('hell');
 
     rohdomopoTimer1.start();
     rohdomopoTimer2.start();
-    await TimersPromises.setTimeout(200);
+    await TimersPromises.setTimeout(250);
     rohdomopoTimer1.pause();
     rohdomopoTimer2.pause();
 
     expect(rohdomopoTimer1.state).toBe('heaven');
-    expect(rohdomopoTimer1.heavenTimer.currentTime_cs).toBeLessThan(25 * 60 * 100);
-    expect(rohdomopoTimer2.state).toBe('hell');
-    expect(rohdomopoTimer2.hellTimer.currentTime_cs).toBeLessThan(5 * 60 * 100);
+    expect(rohdomopoTimer2.state).toBe('heaven');
   });
 
-  await test('`RohdomopoTimer.pause()`', async () => {
+  await test('`RohdomopoTimer.start()` - `heavenTimer` 終了時に自動的に `state` が `\'hell\' に切り替わる`', async () => {
     const rohdomopoTimer1 = new RohdomopoTimer.RohdomopoTimer(
-      5 * 60 * 1000, 25 * 60 * 1000, 
+      5 * 60 * 1000,
+      100,
+      () => { }, 
+      () => { },
+      () => { }
+    );
+    const rohdomopoTimer2 = new RohdomopoTimer.RohdomopoTimer(
+      5 * 1000,
+      200,
+      () => { },
+      () => { },
+      () => { }
+    );
+    rohdomopoTimer1.switchState('heaven');
+    rohdomopoTimer2.switchState('heaven');
+
+    rohdomopoTimer1.start();
+    rohdomopoTimer2.start();
+    await TimersPromises.setTimeout(250);
+    rohdomopoTimer1.pause();
+    rohdomopoTimer2.pause();
+
+    expect(rohdomopoTimer1.state).toBe('hell');
+    expect(rohdomopoTimer2.state).toBe('hell');
+  });
+
+  await test('`RohdomopoTimer.start()` - `hellTimer` 終了時に自動的に `heavenTimer` が開始される', async () => {
+    const rohdomopoTimer1 = new RohdomopoTimer.RohdomopoTimer(
+      100, 
+      25 * 60 * 1000, 
+      () => { }, 
+      () => { },
+      () => { }
+    );
+    const rohdomopoTimer2 = new RohdomopoTimer.RohdomopoTimer(
+      200, 
+      25 * 1000,
+      () => { },
+      () => { },
+      () => { }
+    );
+    rohdomopoTimer1.switchState('hell');
+    rohdomopoTimer2.switchState('hell');
+
+    rohdomopoTimer1.start();
+    rohdomopoTimer2.start();
+    await TimersPromises.setTimeout(250);
+    const currentTime1_cs = rohdomopoTimer1.heavenTimer.currentTime_cs;
+    const currentTime2_cs = rohdomopoTimer2.heavenTimer.currentTime_cs;
+    rohdomopoTimer1.pause();
+    rohdomopoTimer2.pause();
+
+    expect(currentTime1_cs).toBeLessThan(25 * 60 * 100);
+    expect(currentTime2_cs).toBeLessThan(25 * 100);
+  });
+
+  await test('`RohdomopoTimer.start()` - `heavenTimer` 終了時に自動的に `hellTimer` が開始される', async () => {
+    const rohdomopoTimer1 = new RohdomopoTimer.RohdomopoTimer(
+      5 * 60 * 1000, 
+      100,
+      () => { }, 
+      () => { },
+      () => { }
+    );
+    const rohdomopoTimer2 = new RohdomopoTimer.RohdomopoTimer(
+      5 * 1000,
+      200,
+      () => { },
+      () => { },
+      () => { }
+    );
+    rohdomopoTimer1.switchState('heaven');
+    rohdomopoTimer2.switchState('heaven');
+
+    rohdomopoTimer1.start();
+    rohdomopoTimer2.start();
+    await TimersPromises.setTimeout(250);
+    const currentTime1_cs = rohdomopoTimer1.hellTimer.currentTime_cs;
+    const currentTime2_cs = rohdomopoTimer2.hellTimer.currentTime_cs;
+    rohdomopoTimer1.pause();
+    rohdomopoTimer2.pause();
+
+    expect(currentTime1_cs).toBeLessThan(5 * 60 * 100);
+    expect(currentTime2_cs).toBeLessThan(5 * 100);
+  });
+
+  await test('`RohdomopoTimer.pause()` - \"五分間の徒労\" 状態時に呼び出すと `hellTimer` が一時停止される', async () => {
+    const rohdomopoTimer1 = new RohdomopoTimer.RohdomopoTimer(
+      5 * 60 * 1000, 
+      25 * 60 * 1000, 
       () => { },
       () => { },
       () => { }
     );
     const rohdomopoTimer2 = new RohdomopoTimer.RohdomopoTimer(
-      5 * 60 * 1000, 25 * 60 * 1000, 
+      5 * 1000, 
+      25 * 1000, 
       () => { },
       () => { },
       () => { }
     );
     rohdomopoTimer1.switchState('hell');
+    rohdomopoTimer2.switchState('hell');
+
+    rohdomopoTimer1.start();
+    rohdomopoTimer2.start();
+    await TimersPromises.setTimeout(100);
+    rohdomopoTimer1.pause();
+    rohdomopoTimer2.pause();
+    await TimersPromises.setTimeout(10);
+    const currentTime1_1_cs = rohdomopoTimer1.hellTimer.currentTime_cs;
+    const currentTime2_1_cs = rohdomopoTimer2.hellTimer.currentTime_cs;
+    await TimersPromises.setTimeout(100);
+    const currentTime1_2_cs = rohdomopoTimer1.hellTimer.currentTime_cs;
+    const currentTime2_2_cs = rohdomopoTimer2.hellTimer.currentTime_cs;
+
+    expect(currentTime1_1_cs).toBe(currentTime1_2_cs);
+    expect(currentTime2_1_cs).toBe(currentTime2_2_cs);
+  });
+
+  await test('`RohdomopoTimer.pause()` - \"二十五分間の解放\" 状態時に呼び出すと `heavenTimer` が一時停止される', async () => {
+    const rohdomopoTimer1 = new RohdomopoTimer.RohdomopoTimer(
+      5 * 60 * 1000, 
+      25 * 60 * 1000, 
+      () => { },
+      () => { },
+      () => { }
+    );
+    const rohdomopoTimer2 = new RohdomopoTimer.RohdomopoTimer(
+      5 * 1000, 
+      25 * 1000, 
+      () => { },
+      () => { },
+      () => { }
+    );
+    rohdomopoTimer1.switchState('heaven');
     rohdomopoTimer2.switchState('heaven');
 
     rohdomopoTimer1.start();
@@ -1105,19 +1500,19 @@ async function startTests() {
     rohdomopoTimer1.pause();
     rohdomopoTimer2.pause();
     await TimersPromises.setTimeout(10);
-    const currentTime1_1 = rohdomopoTimer1.hellTimer.currentTime_cs;
-    const currentTime2_1 = rohdomopoTimer2.heavenTimer.currentTime_cs;
+    const currentTime1_1_cs = rohdomopoTimer1.heavenTimer.currentTime_cs;
+    const currentTime2_1_cs = rohdomopoTimer2.heavenTimer.currentTime_cs;
     await TimersPromises.setTimeout(100);
-    const currentTime1_2 = rohdomopoTimer1.hellTimer.currentTime_cs;
-    const currentTime2_2 = rohdomopoTimer2.heavenTimer.currentTime_cs;
+    const currentTime1_2_cs = rohdomopoTimer1.heavenTimer.currentTime_cs;
+    const currentTime2_2_cs = rohdomopoTimer2.heavenTimer.currentTime_cs;
 
-    expect(currentTime1_1).toBe(currentTime1_2);
-    expect(currentTime2_1).toBe(currentTime2_2);
-  })
+    expect(currentTime1_1_cs).toBe(currentTime1_2_cs);
+    expect(currentTime2_1_cs).toBe(currentTime2_2_cs);
+  });
 
   // -------- /common/scripts/timers-promises.js --------
 
-  await test('`setTimeout()` - Test 1', async () => {
+  await test('`setTimeout()` - 時間の誤差が 10% 以内に収まる (1)', async () => {
     const timeoutStarted = new Date();
 
     await TimersPromises.setTimeout(100);
@@ -1128,7 +1523,7 @@ async function startTests() {
     expect(time).toBeLessThan(100 * 1.1);
   });
 
-  await test('`setTimeout()` - Test 2', async () => {
+  await test('`setTimeout()` - 時間の誤差が 10% 以内に収まる (2)', async () => {
     const timeoutStarted = new Date();
 
     await TimersPromises.setTimeout(250);
@@ -1139,7 +1534,7 @@ async function startTests() {
     expect(time).toBeLessThan(250 * 1.1);
   });
 
-  await test('`setInterval()` - Test 1', async () => {
+  await test('`setInterval()` - 時間の誤差が 10% 以内に収まる (1)', async () => {
     const intervalStarted = new Date();
     
     let count = -1;
@@ -1157,7 +1552,7 @@ async function startTests() {
     expect(time).toBeLessThan(500 * 1.1);
   });
 
-  await test('`setInterval()` - Test 2', async () => {
+  await test('`setInterval()` - 時間の誤差が 10% 以内に収まる (2)', async () => {
     const intervalStarted = new Date();
     
     let count = -1;
@@ -1181,7 +1576,11 @@ async function startTests() {
 
   // -------- テストが終了したことを示すメッセージ --------
 
-  console.info('-------- Test run complete. 😉 --------');
+  console.info(
+    '----------------------------\n'  +
+    'Test run complete. 😉\n' +
+    '----------------------------'
+  );
 
 }
 
@@ -1192,6 +1591,8 @@ async function startTests() {
  */
 const startTestsButton = document.querySelector('#start-tests-button');
 
-startTestsButton.addEventListener('click', async () => {
-  await startTests();
+document.addEventListener('DOMContentLoaded', () => {
+  startTestsButton.addEventListener('click', async () => {
+    await startTests();
+  });
 });
