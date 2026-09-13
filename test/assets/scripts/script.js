@@ -436,6 +436,30 @@ async function startTests() {
     expect(rohdomopoApp.startPauseButtonElement.textContent).toBe('カウントダウンを再開');
   });
 
+  await test('`RohdomopoApp.onClickStartPauseButton()` でタイマーを一時停止した時に誤差が生じない', async () => {
+    const body = document.body;
+    const soundDialogElement = htmlContainer.querySelector('#sound-dialog');
+    const stateHeadingElement = htmlContainer.querySelector('#state-heading');
+    const stateMessageElement = htmlContainer.querySelector('#state-message');
+    const timerDisplayElement = htmlContainer.querySelector('#timer-display');
+    const startPauseButtonElement = htmlContainer.querySelector('#start-pause-button');
+    const rohdomopoApp = new App.RohdomopoApp(
+      body,
+      soundDialogElement,
+      stateHeadingElement,
+      stateMessageElement,
+      timerDisplayElement,
+      startPauseButtonElement,
+      audioEngine
+    );
+
+    rohdomopoApp.onClickStartPauseButton();
+    await TimersPromises.setTimeout(150);
+    rohdomopoApp.onClickStartPauseButton();
+
+    expect(timerDisplayElement.textContent).toBe(rohdomopoApp.rohdomopoTimer.textContent);
+  });
+
   await test('`RohdomopoApp.enableStartPauseButton()`', () => {
     const body = document.body;
     const soundDialogElement = htmlContainer.querySelector('#sound-dialog');
