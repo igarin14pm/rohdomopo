@@ -224,6 +224,9 @@ export class RohdomopoApp {
       // 残り時間UIの更新を停止
       this.cancelUpdatingTimerDisplay();
 
+      // タイマー停止時の残り時間UIの誤差を防ぐためにUIを更新
+      this.timerDisplayElement.textContent = this.rohdomopoTimer.textContent;
+
       // ボタンのテキストを変更
       this.startPauseButtonElement.textContent = 'カウントダウンを再開';
 
