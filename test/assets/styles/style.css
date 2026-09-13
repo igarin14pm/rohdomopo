@@ -6,3 +6,8 @@ body, body.hell, body.heaven {
 hr, .hell hr, .heaven hr {
   border-color: var(--color-normal-dark);
 }
+
+.button, .hell .button, .heaven .button {
+  background-color: var(--color-normal-dark);
+  color: var(--color-normal-light);
+}
